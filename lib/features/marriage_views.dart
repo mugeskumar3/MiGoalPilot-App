@@ -48,37 +48,44 @@ class MarriagePlannerScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Our Marriage Plan')),
+      appBar: MiAppBar(
+        title: '💍 Our Marriage Plan',
+        subtitle: '18 months to go',
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 20),
+          onPressed: () => context.pop(),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_vert),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Marriage Header Banner (Premium gradient hero moment)
+            // Marriage Header Banner (Ivory & Emerald Theme Card)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: isLight
-                      ? [AppColors.secondary, AppColors.primary]
-                      : [AppColors.surfaceDark, AppColors.backgroundDark],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                color: isLight ? AppColors.softSurface : AppColors.surfaceDark,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isLight ? AppColors.border : AppColors.borderDark,
                 ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: isLight ? AppShadows.light : AppShadows.dark,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '18 MONTHS TO GO',
+                    '💍 WEDDING PLANNER',
                     style: AppTextStyles.caption.copyWith(
-                      color: isLight
-                          ? Colors.white70
-                          : AppColors.textSecondaryDark,
-                      fontWeight: FontWeight.w800,
+                      color: AppColors.accent,
+                      fontWeight: FontWeight.bold,
                       letterSpacing: 0.8,
                     ),
                   ),
@@ -86,7 +93,7 @@ class MarriagePlannerScreen extends ConsumerWidget {
                   Text(
                     'BUDGET LIMIT',
                     style: AppTextStyles.caption.copyWith(
-                      color: isLight ? Colors.white60 : AppColors.textLightDark,
+                      color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
                       fontSize: 10,
                       letterSpacing: 0.5,
                     ),
@@ -97,10 +104,17 @@ class MarriagePlannerScreen extends ConsumerWidget {
                       MoneyDisplay(
                         amount: plan.totalBudget,
                         style: AppTextStyles.displayLarge.copyWith(
-                          color: Colors.white,
+                          color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const Text('💍', style: TextStyle(fontSize: 28)),
+                      Text(
+                        '18 months left',
+                        style: AppTextStyles.caption.copyWith(
+                          color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -208,24 +222,35 @@ class MarriageBudgetScreen extends ConsumerWidget {
 
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Marriage Budget')),
+      appBar: MiBackAppBar(
+        title: 'Marriage Budget',
+        onBackPressed: () => context.pop(),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Spend Summary Banner
+          // Spend Summary Banner (Typography first)
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             child: Row(
               children: [
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('BUDGET LIMIT', style: AppTextStyles.caption),
+                      Text(
+                        'BUDGET LIMIT',
+                        style: AppTextStyles.caption.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
                       MoneyDisplay(
                         amount: plan.totalBudget,
                         style: AppTextStyles.titleLarge.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
                         ),
                       ),
                     ],
@@ -235,7 +260,14 @@ class MarriageBudgetScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('TOTAL SPENT', style: AppTextStyles.caption),
+                      Text(
+                        'TOTAL SPENT',
+                        style: AppTextStyles.caption.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
                       MoneyDisplay(
                         amount: totalSpent,
                         style: AppTextStyles.titleLarge.copyWith(
@@ -411,7 +443,10 @@ class MarriageTimelineScreen extends ConsumerWidget {
     if (plan == null) return const Scaffold(body: LoadingState());
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Milestones Timeline')),
+      appBar: MiBackAppBar(
+        title: 'Milestones Timeline',
+        onBackPressed: () => context.pop(),
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(20),
         itemCount: plan.timelineTasks.length,
@@ -425,16 +460,16 @@ class MarriageTimelineScreen extends ConsumerWidget {
                 Column(
                   children: [
                     Container(
-                      width: 16,
-                      height: 16,
+                      width: 14,
+                      height: 14,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: t.isCompleted
-                            ? AppColors.secondary
+                            ? AppColors.accent // Champagne Gold
                             : Colors.transparent,
                         border: Border.all(
-                          color: AppColors.secondary,
-                          width: 2,
+                          color: AppColors.accent,
+                          width: 1.5,
                         ),
                       ),
                     ),
@@ -442,9 +477,9 @@ class MarriageTimelineScreen extends ConsumerWidget {
                       Container(
                         width: 2,
                         height: 60,
-                        color: isLight
-                            ? AppColors.border
-                            : AppColors.borderDark,
+                        color: t.isCompleted
+                            ? AppColors.secondary 
+                            : (isLight ? AppColors.border : AppColors.borderDark),
                       ),
                   ],
                 ),

@@ -65,21 +65,36 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('✈️', style: TextStyle(fontSize: 64)),
+                    Container(
+                      width: 88,
+                      height: 88,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white.withValues(alpha: 0.08),
+                        border: Border.all(
+                          color: AppColors.accent.withValues(alpha: 0.4),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text('✨', style: TextStyle(fontSize: 40)),
+                      ),
+                    ),
                     AppSpacing.heightM,
                     Text(
                       'MiGoalPilot',
                       style: AppTextStyles.displayLarge.copyWith(
                         color: Colors.white,
                         letterSpacing: -1.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     AppSpacing.heightXS,
                     Text(
                       'Fly Closer to Your Dreams.',
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        fontStyle: FontStyle.italic,
+                        color: AppColors.accent,
+                        letterSpacing: 0.5,
                       ),
                     ),
                   ],
@@ -284,115 +299,297 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final isLight = Theme.of(context).brightness == Brightness.light;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
+      appBar: MiBackAppBar(
+        title: 'Sign In',
+        onBackPressed: () {
+          if (Navigator.of(context).canPop()) {
+            context.pop();
+          } else {
+            context.go('/onboarding/3');
+          }
+        },
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Welcome back', style: AppTextStyles.displayMedium),
-                AppSpacing.heightXS,
-                Text(
-                  'Access your goals and savings co-pilot planner.',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: isLight
-                        ? AppColors.textSecondary
-                        : AppColors.textSecondaryDark,
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          child: Column(
+            children: [
+              // Hero Creative Header Banner Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: isLight ? AppColors.primary : AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: AppColors.accent.withValues(alpha: 0.4),
+                    width: 1.5,
                   ),
-                ),
-                const SizedBox(height: 32),
-                if (state.error != null) ...[
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.error.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppColors.error.withValues(alpha: 0.15),
-                      ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
                     ),
-                    child: Text(
-                      state.error!,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.error,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  AppSpacing.heightM,
-                ],
-                AppTextField(
-                  label: 'Email address',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (val) => val == null || !val.contains('@')
-                      ? 'Enter a valid email'
-                      : null,
+                  ],
                 ),
-                AppSpacing.heightM,
-                AppTextField(
-                  label: 'Password',
-                  controller: _passwordController,
-                  obscureText: _obscure,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscure
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      size: 20,
-                    ),
-                    onPressed: () => setState(() => _obscure = !_obscure),
-                  ),
-                  validator: (val) => val == null || val.length < 6
-                      ? 'Password must be 6+ characters'
-                      : null,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () => context.go('/forgot-password'),
-                    child: Text(
-                      'Forgot Password?',
-                      style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                PrimaryButton(
-                  text: 'Sign In',
-                  isLoading: state.isLoading,
-                  onPressed: _submit,
-                ),
-                AppSpacing.heightM,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Don't have an account?",
-                      style: AppTextStyles.bodyMedium,
-                    ),
-                    TextButton(
-                      onPressed: () => context.go('/register'),
-                      child: Text(
-                        'Register',
-                        style: TextStyle(
-                          color: isLight
-                              ? AppColors.secondary
-                              : AppColors.primaryDark,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: AppColors.accent.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('✨', style: TextStyle(fontSize: 12)),
+                              const SizedBox(width: 6),
+                              Text(
+                                'MIGOALPILOT CO-PILOT',
+                                style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
+                        const Icon(
+                          Icons.shield_outlined,
+                          color: AppColors.accent,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Welcome Back',
+                      style: AppTextStyles.headlineLarge.copyWith(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Fly closer to your dreams with smart financial balance.',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: Colors.white.withValues(alpha: 0.7),
+                        fontSize: 13,
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+
+              // Form Container Card
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: isLight ? Colors.white : AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isLight ? AppColors.border : AppColors.borderDark,
+                  ),
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (state.error != null) ...[
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(14),
+                          decoration: BoxDecoration(
+                            color: AppColors.error.withValues(alpha: 0.08),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: AppColors.error.withValues(alpha: 0.2),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: AppColors.error,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  state.error!,
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.error,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        AppSpacing.heightM,
+                      ],
+                      AppTextField(
+                        label: 'Email address',
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        prefixIcon: Icon(
+                          Icons.mail_outline_rounded,
+                          size: 20,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                        validator: (val) => val == null || !val.contains('@')
+                            ? 'Enter a valid email'
+                            : null,
+                      ),
+                      AppSpacing.heightM,
+                      AppTextField(
+                        label: 'Password',
+                        controller: _passwordController,
+                        obscureText: _obscure,
+                        prefixIcon: Icon(
+                          Icons.lock_outline_rounded,
+                          size: 20,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscure
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            size: 20,
+                            color: isLight
+                                ? AppColors.textSecondary
+                                : AppColors.textSecondaryDark,
+                          ),
+                          onPressed: () => setState(() => _obscure = !_obscure),
+                        ),
+                        validator: (val) => val == null || val.length < 6
+                            ? 'Password must be 6+ characters'
+                            : null,
+                      ),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () => context.go('/forgot-password'),
+                          child: Text(
+                            'Forgot Password?',
+                            style: AppTextStyles.caption.copyWith(
+                              color: isLight
+                                  ? AppColors.primary
+                                  : AppColors.accent,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      PrimaryButton(
+                        text: 'Sign In',
+                        isLoading: state.isLoading,
+                        onPressed: _submit,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Creative Footer Card
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: isLight ? AppColors.softSurface : AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isLight ? AppColors.border : AppColors.borderDark,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account?",
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: isLight
+                                ? AppColors.textSecondary
+                                : AppColors.textSecondaryDark,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: () => context.go('/register'),
+                          child: Text(
+                            'Create Account',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: isLight
+                                  ? AppColors.primary
+                                  : AppColors.accent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.lock_clock_outlined,
+                          size: 14,
+                          color: isLight
+                              ? AppColors.textLight
+                              : AppColors.textLightDark,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          '256-Bit Bank-Grade Encryption • Private & Secure',
+                          style: AppTextStyles.caption.copyWith(
+                            fontSize: 11,
+                            color: isLight
+                                ? AppColors.textLight
+                                : AppColors.textLightDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
       ),
@@ -455,114 +652,296 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final isLight = Theme.of(context).brightness == Brightness.light;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Account')),
+      appBar: MiBackAppBar(
+        title: 'Create Account',
+        onBackPressed: () {
+          if (Navigator.of(context).canPop()) {
+            context.pop();
+          } else {
+            context.go('/login');
+          }
+        },
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Get Started', style: AppTextStyles.displayMedium),
-                AppSpacing.heightXS,
-                Text(
-                  'Join MiGoalPilot to navigate toward the things that matter.',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: isLight
-                        ? AppColors.textSecondary
-                        : AppColors.textSecondaryDark,
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          child: Column(
+            children: [
+              // Hero Creative Header Banner Card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: isLight ? AppColors.primary : AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: AppColors.accent.withValues(alpha: 0.4),
+                    width: 1.5,
                   ),
-                ),
-                const SizedBox(height: 24),
-                AppTextField(
-                  label: 'Name',
-                  controller: _nameController,
-                  validator: (val) =>
-                      val == null || val.isEmpty ? 'Enter your name' : null,
-                ),
-                AppSpacing.heightM,
-                AppTextField(
-                  label: 'Email address',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (val) => val == null || !val.contains('@')
-                      ? 'Enter a valid email'
-                      : null,
-                ),
-                AppSpacing.heightM,
-                AppTextField(
-                  label: 'Password',
-                  controller: _passwordController,
-                  obscureText: _obscure,
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscure
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined,
-                      size: 20,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
                     ),
-                    onPressed: () => setState(() => _obscure = !_obscure),
-                  ),
-                  validator: (val) => val == null || val.length < 6
-                      ? 'Password must be 6+ characters'
-                      : null,
+                  ],
                 ),
-                AppSpacing.heightM,
-                AppTextField(
-                  label: 'Confirm Password',
-                  controller: _confirmController,
-                  obscureText: _obscure,
-                  validator: (val) => val != _passwordController.text
-                      ? 'Passwords do not match'
-                      : null,
-                ),
-                AppSpacing.heightS,
-                CheckboxListTile(
-                  title: Text(
-                    'I agree to the Terms & Privacy Policy',
-                    style: AppTextStyles.caption.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  value: _agree,
-                  onChanged: (val) => setState(() => _agree = val ?? false),
-                  contentPadding: EdgeInsets.zero,
-                  controlAffinity: ListTileControlAffinity.leading,
-                  activeColor: isLight
-                      ? AppColors.primary
-                      : AppColors.primaryDark,
-                ),
-                const SizedBox(height: 20),
-                PrimaryButton(
-                  text: 'Create Plan Account',
-                  isLoading: state.isLoading,
-                  onPressed: _submit,
-                ),
-                AppSpacing.heightM,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Already have an account?',
-                      style: AppTextStyles.bodyMedium,
-                    ),
-                    TextButton(
-                      onPressed: () => context.go('/login'),
-                      child: Text(
-                        'Login',
-                        style: TextStyle(
-                          color: isLight
-                              ? AppColors.secondary
-                              : AppColors.primaryDark,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.accent.withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: AppColors.accent.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('🎯', style: TextStyle(fontSize: 12)),
+                              const SizedBox(width: 6),
+                              Text(
+                                'START YOUR FLIGHT PLAN',
+                                style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.accent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                  letterSpacing: 0.8,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
+                        const Icon(
+                          Icons.verified_user_outlined,
+                          color: AppColors.accent,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Create Account',
+                      style: AppTextStyles.headlineLarge.copyWith(
+                        color: Colors.white,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Join MiGoalPilot to navigate towards what matters most.',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: Colors.white.withValues(alpha: 0.7),
+                        fontSize: 13,
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+
+              // Form Container Card
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: isLight ? Colors.white : AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isLight ? AppColors.border : AppColors.borderDark,
+                  ),
+                ),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppTextField(
+                        label: 'Full Name',
+                        controller: _nameController,
+                        prefixIcon: Icon(
+                          Icons.person_outline_rounded,
+                          size: 20,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                        validator: (val) =>
+                            val == null || val.isEmpty ? 'Enter your name' : null,
+                      ),
+                      AppSpacing.heightM,
+                      AppTextField(
+                        label: 'Email address',
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        prefixIcon: Icon(
+                          Icons.mail_outline_rounded,
+                          size: 20,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                        validator: (val) => val == null || !val.contains('@')
+                            ? 'Enter a valid email'
+                            : null,
+                      ),
+                      AppSpacing.heightM,
+                      AppTextField(
+                        label: 'Password',
+                        controller: _passwordController,
+                        obscureText: _obscure,
+                        prefixIcon: Icon(
+                          Icons.lock_outline_rounded,
+                          size: 20,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscure
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            size: 20,
+                            color: isLight
+                                ? AppColors.textSecondary
+                                : AppColors.textSecondaryDark,
+                          ),
+                          onPressed: () => setState(() => _obscure = !_obscure),
+                        ),
+                        validator: (val) => val == null || val.length < 6
+                            ? 'Password must be 6+ characters'
+                            : null,
+                      ),
+                      AppSpacing.heightM,
+                      AppTextField(
+                        label: 'Confirm Password',
+                        controller: _confirmController,
+                        obscureText: _obscure,
+                        prefixIcon: Icon(
+                          Icons.lock_outline_rounded,
+                          size: 20,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                        validator: (val) => val != _passwordController.text
+                            ? 'Passwords do not match'
+                            : null,
+                      ),
+                      AppSpacing.heightS,
+                      CheckboxListTile(
+                        title: Text(
+                          'I agree to the Terms & Privacy Policy',
+                          style: AppTextStyles.caption.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: isLight
+                                ? AppColors.textPrimary
+                                : AppColors.textPrimaryDark,
+                          ),
+                        ),
+                        value: _agree,
+                        onChanged: (val) => setState(() => _agree = val ?? false),
+                        contentPadding: EdgeInsets.zero,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        activeColor: isLight
+                            ? AppColors.primary
+                            : AppColors.accent,
+                      ),
+                      const SizedBox(height: 20),
+                      PrimaryButton(
+                        text: 'Create Plan Account',
+                        isLoading: state.isLoading,
+                        onPressed: _submit,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Creative Footer Card
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: isLight ? AppColors.softSurface : AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isLight ? AppColors.border : AppColors.borderDark,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Already have an account?',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: isLight
+                                ? AppColors.textSecondary
+                                : AppColors.textSecondaryDark,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: () => context.go('/login'),
+                          child: Text(
+                            'Sign In',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: isLight
+                                  ? AppColors.primary
+                                  : AppColors.accent,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Divider(height: 1),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.verified_user_outlined,
+                          size: 14,
+                          color: isLight
+                              ? AppColors.textLight
+                              : AppColors.textLightDark,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Zero Data Sharing • 100% Private Savings Co-Pilot',
+                          style: AppTextStyles.caption.copyWith(
+                            fontSize: 11,
+                            color: isLight
+                                ? AppColors.textLight
+                                : AppColors.textLightDark,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
         ),
       ),
@@ -592,7 +971,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      appBar: AppBar(title: const Text('Recover Password')),
+      appBar: MiBackAppBar(
+        title: 'Recover Password',
+        onBackPressed: () {
+          if (Navigator.of(context).canPop()) {
+            context.pop();
+          } else {
+            context.go('/login');
+          }
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: _submitted
@@ -668,7 +1056,10 @@ class GoalSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      appBar: AppBar(title: const Text('Choose Path')),
+      appBar: MiBackAppBar(
+        title: 'Choose Path',
+        onBackPressed: () => context.pop(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(

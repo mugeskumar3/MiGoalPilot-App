@@ -47,11 +47,16 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
         .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gold Market'),
+      appBar: MiAppBar(
+        title: '🥇 Gold',
+        subtitle: 'Track your price and progress',
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_active_outlined),
+            icon: const Icon(
+              Icons.notifications_active_outlined,
+              color: AppColors.accent,
+              size: 22,
+            ),
             onPressed: () => _showAlertBottomSheet(context),
           ),
         ],
@@ -197,13 +202,13 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                 ),
                 AppSpacing.heightM,
 
-                // fl_chart graph container
+                // fl_chart graph container (Redesigned with Emerald curve + Champagne point)
                 Container(
                   height: 180,
                   padding: const EdgeInsets.only(top: 12, right: 16, bottom: 4),
                   decoration: BoxDecoration(
                     color: isLight ? Colors.white : AppColors.surfaceDark,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isLight ? AppColors.border : AppColors.borderDark,
                     ),
@@ -226,13 +231,27 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                                   );
                                 }),
                                 isCurved: true,
-                                color: AppColors.accent,
-                                barWidth: 2,
-                                dotData: const FlDotData(show: false),
+                                color:
+                                    AppColors.secondary, // Emerald Green Line
+                                barWidth: 2.5,
+                                dotData: FlDotData(
+                                  show: true,
+                                  getDotPainter: (spot, percent, barData, index) {
+                                    final isLast =
+                                        index == barData.spots.length - 1;
+                                    return FlDotCirclePainter(
+                                      radius: isLast ? 4 : 0,
+                                      color: AppColors
+                                          .accent, // Champagne Gold Highlight
+                                      strokeColor: AppColors.accent,
+                                      strokeWidth: 1,
+                                    );
+                                  },
+                                ),
                                 belowBarData: BarAreaData(
                                   show: true,
-                                  color: AppColors.accent.withValues(
-                                    alpha: 0.08,
+                                  color: AppColors.secondary.withValues(
+                                    alpha: 0.04,
                                   ),
                                 ),
                               ),
@@ -382,7 +401,7 @@ class GoldGoalDetailScreen extends ConsumerWidget {
     final estimatedValueRemaining = remainingGrams * spotPrice;
 
     return Scaffold(
-      appBar: AppBar(title: Text(g.name)),
+      appBar: MiBackAppBar(title: g.name, onBackPressed: () => context.pop()),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -483,7 +502,10 @@ class _GoldAlertSettingsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Alert Configuration')),
+      appBar: MiBackAppBar(
+        title: 'Alert Configuration',
+        onBackPressed: () => context.pop(),
+      ),
       body: const Padding(
         padding: EdgeInsets.all(24.0),
         child: _GoldAlertBottomSheetContent(isFullScreenRoute: true),

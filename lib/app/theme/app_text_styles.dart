@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppTextStyles {
-  static const String fontFamily = 'Inter';
+  static const String fontFamily = 'PlusJakartaSans';
 
   static const TextStyle displayLarge = TextStyle(
     fontFamily: fontFamily,
-    fontSize: 36,
-    fontWeight: FontWeight.w800,
-    letterSpacing: -1.5,
-    height: 1.1,
+    fontSize: 34,
+    fontWeight: FontWeight.bold,
+    letterSpacing: -1.0,
+    height: 1.15,
   );
 
   static const TextStyle displayMedium = TextStyle(

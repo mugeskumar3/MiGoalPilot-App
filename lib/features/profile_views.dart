@@ -23,7 +23,7 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-    
+
     final txs = [
       SavingsTransaction(
         id: 'tx1',
@@ -70,17 +70,28 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     final percent = (totalSavedThisMonth / targetThisMonth).clamp(0.0, 1.0);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Activity History')),
+      appBar: const MiAppBar(
+        title: 'Activity History',
+        subtitle: 'Track your contributions and purchases',
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Monthly Progress Header (Spacious, typography-focused)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 16.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('MONTHLY SAVINGS TARGET (AUGUST 2026)', style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold)),
+                Text(
+                  'MONTHLY SAVINGS TARGET (AUGUST 2026)',
+                  style: AppTextStyles.caption.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,15 +100,26 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                       crossAxisAlignment: CrossAxisAlignment.baseline,
                       textBaseline: TextBaseline.alphabetic,
                       children: [
-                        MoneyDisplay(amount: totalSavedThisMonth, style: AppTextStyles.displayMedium),
+                        MoneyDisplay(
+                          amount: totalSavedThisMonth,
+                          style: AppTextStyles.displayMedium,
+                        ),
                         const SizedBox(width: 8),
                         const Text('saved of ', style: AppTextStyles.caption),
-                        const MoneyDisplay(amount: targetThisMonth, style: AppTextStyles.caption),
+                        const MoneyDisplay(
+                          amount: targetThisMonth,
+                          style: AppTextStyles.caption,
+                        ),
                       ],
                     ),
                     Text(
                       '${(percent * 100).toStringAsFixed(0)}%',
-                      style: AppTextStyles.titleMedium.copyWith(color: isLight ? AppColors.secondary : AppColors.primaryDark, fontWeight: FontWeight.bold),
+                      style: AppTextStyles.titleMedium.copyWith(
+                        color: isLight
+                            ? AppColors.secondary
+                            : AppColors.primaryDark,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -118,7 +140,15 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                 return Container(
                   margin: const EdgeInsets.only(right: 8),
                   child: FilterChip(
-                    label: Text(t, style: TextStyle(fontSize: 12, fontWeight: isSelected ? FontWeight.bold : FontWeight.normal)),
+                    label: Text(
+                      t,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
                     selected: isSelected,
                     onSelected: (val) {
                       if (val) setState(() => _filter = t);
@@ -141,19 +171,25 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                   decoration: BoxDecoration(
                     color: isLight ? Colors.white : AppColors.surfaceDark,
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: isLight ? AppColors.border : AppColors.borderDark),
+                    border: Border.all(
+                      color: isLight ? AppColors.border : AppColors.borderDark,
+                    ),
                   ),
                   child: Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: isLight ? AppColors.background : AppColors.backgroundDark,
+                          color: isLight
+                              ? AppColors.background
+                              : AppColors.backgroundDark,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           t.goalId == 'g_gold' ? Icons.stars : Icons.wallet,
-                          color: isLight ? AppColors.primary : AppColors.primaryDark,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
                           size: 16,
                         ),
                       ),
@@ -162,7 +198,10 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(t.note ?? 'Contribution', style: AppTextStyles.titleMedium),
+                            Text(
+                              t.note ?? 'Contribution',
+                              style: AppTextStyles.titleMedium,
+                            ),
                             const SizedBox(height: 4),
                             Text(
                               DateFormat('dd MMM yyyy, hh:mm a').format(t.date),
@@ -204,10 +243,14 @@ class NotificationsScreen extends ConsumerWidget {
         title: const Text('Notifications'),
         actions: [
           TextButton(
-            onPressed: () => ref.read(notificationViewModelProvider.notifier).clearAll(),
+            onPressed: () =>
+                ref.read(notificationViewModelProvider.notifier).clearAll(),
             child: const Text(
               'Clear All',
-              style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: AppColors.error,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -225,20 +268,24 @@ class NotificationsScreen extends ConsumerWidget {
                 final item = state.items[index];
                 return Container(
                   decoration: BoxDecoration(
-                    color: item.isRead 
-                        ? (isLight ? Colors.white : AppColors.surfaceDark) 
-                        : (isLight ? AppColors.secondary.withValues(alpha: 0.03) : AppColors.surfaceDark.withValues(alpha: 0.8)),
+                    color: item.isRead
+                        ? (isLight ? Colors.white : AppColors.surfaceDark)
+                        : (isLight
+                              ? AppColors.secondary.withValues(alpha: 0.03)
+                              : AppColors.surfaceDark.withValues(alpha: 0.8)),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: !item.isRead && isLight 
-                          ? AppColors.secondary.withValues(alpha: 0.15) 
+                      color: !item.isRead && isLight
+                          ? AppColors.secondary.withValues(alpha: 0.15)
                           : (isLight ? AppColors.border : AppColors.borderDark),
                       width: !item.isRead ? 1.5 : 1,
                     ),
                   ),
                   child: ListTile(
                     onTap: () {
-                      ref.read(notificationViewModelProvider.notifier).markAsRead(item.id);
+                      ref
+                          .read(notificationViewModelProvider.notifier)
+                          .markAsRead(item.id);
                       if (item.deepLink != null) {
                         context.push(item.deepLink!);
                       }
@@ -249,7 +296,11 @@ class NotificationsScreen extends ConsumerWidget {
                         Expanded(
                           child: Text(
                             item.title,
-                            style: AppTextStyles.titleMedium.copyWith(fontWeight: !item.isRead ? FontWeight.bold : FontWeight.normal),
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontWeight: !item.isRead
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
                         if (!item.isRead)
@@ -297,7 +348,10 @@ class ProfileScreen extends ConsumerWidget {
     final userEmail = user?.email ?? 'mugesh@migoalpilot.com';
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Profile')),
+      appBar: const MiAppBar(
+        title: 'Profile',
+        subtitle: 'Manage your settings and preferences',
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
         child: Column(
@@ -310,12 +364,27 @@ class ProfileScreen extends ConsumerWidget {
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: isLight ? AppColors.primary.withValues(alpha: 0.05) : AppColors.surfaceDark,
+                      color: isLight
+                          ? AppColors.primary.withValues(alpha: 0.05)
+                          : AppColors.surfaceDark,
                       shape: BoxShape.circle,
-                      border: Border.all(color: isLight ? AppColors.border : AppColors.borderDark),
+                      border: Border.all(
+                        color: isLight
+                            ? AppColors.border
+                            : AppColors.borderDark,
+                      ),
                     ),
-                    child: const Center(
-                      child: Text('✈️', style: TextStyle(fontSize: 32)),
+                    child: Center(
+                      child: Text(
+                        userName.isNotEmpty ? userName[0].toUpperCase() : 'M',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: isLight
+                              ? AppColors.primary
+                              : AppColors.primaryDark,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -323,7 +392,9 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     userEmail,
-                    style: AppTextStyles.caption.copyWith(color: AppColors.textSecondary),
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -332,17 +403,52 @@ class ProfileScreen extends ConsumerWidget {
 
             // Settings row lists (Fine border lists instead of heavy card columns)
             _profileGroup(context, 'Account Settings', [
-              _profileTile(context, Icons.lock_outline, 'Security & App Lock', '/security'),
-              _profileTile(context, Icons.notifications_none, 'Notifications Prefs', '/notification-settings'),
-              _profileTile(context, Icons.color_lens_outlined, 'Theme Preference', '/theme-settings'),
-              _profileTile(context, Icons.people_outline, 'Couple Shared Mode', '/couple-mode'),
+              _profileTile(
+                context,
+                Icons.lock_outline,
+                'Security & App Lock',
+                '/security',
+              ),
+              _profileTile(
+                context,
+                Icons.notifications_none,
+                'Notifications Prefs',
+                '/notification-settings',
+              ),
+              _profileTile(
+                context,
+                Icons.color_lens_outlined,
+                'Theme Preference',
+                '/theme-settings',
+              ),
+              _profileTile(
+                context,
+                Icons.people_outline,
+                'Couple Shared Mode',
+                '/couple-mode',
+              ),
             ]),
             const SizedBox(height: 24),
 
             _profileGroup(context, 'Legal & Info', [
-              _profileTile(context, Icons.privacy_tip_outlined, 'Privacy Policy', '/privacy'),
-              _profileTile(context, Icons.help_outline, 'Help & Support Center', '/help'),
-              _profileTile(context, Icons.info_outline, 'About MiGoalPilot', '/about'),
+              _profileTile(
+                context,
+                Icons.privacy_tip_outlined,
+                'Privacy Policy',
+                '/privacy',
+              ),
+              _profileTile(
+                context,
+                Icons.help_outline,
+                'Help & Support Center',
+                '/help',
+              ),
+              _profileTile(
+                context,
+                Icons.info_outline,
+                'About MiGoalPilot',
+                '/about',
+              ),
             ]),
             const SizedBox(height: 36),
 
@@ -368,14 +474,19 @@ class ProfileScreen extends ConsumerWidget {
       children: [
         Text(
           title.toUpperCase(),
-          style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold, letterSpacing: 0.5),
+          style: AppTextStyles.caption.copyWith(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
         ),
         AppSpacing.heightS,
         Container(
           decoration: BoxDecoration(
             color: isLight ? Colors.white : AppColors.surfaceDark,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isLight ? AppColors.border : AppColors.borderDark),
+            border: Border.all(
+              color: isLight ? AppColors.border : AppColors.borderDark,
+            ),
           ),
           child: Column(children: tiles),
         ),
@@ -383,7 +494,12 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _profileTile(BuildContext context, IconData icon, String label, String route) {
+  Widget _profileTile(
+    BuildContext context,
+    IconData icon,
+    String label,
+    String route,
+  ) {
     return ListTile(
       leading: Icon(icon, color: AppColors.primary, size: 20),
       title: Text(label, style: AppTextStyles.titleMedium),
@@ -402,24 +518,43 @@ class SecurityScreen extends ConsumerWidget {
     final state = ref.watch(profileViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Security & Safety')),
+      appBar: MiBackAppBar(
+        title: 'Security & Safety',
+        onBackPressed: () => context.pop(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
             SwitchListTile(
-              title: const Text('App Lock Pin', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              subtitle: const Text('Requires verification on startup.', style: AppTextStyles.caption),
+              title: const Text(
+                'App Lock Pin',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text(
+                'Requires verification on startup.',
+                style: AppTextStyles.caption,
+              ),
               value: state.appLockEnabled,
-              onChanged: (val) => ref.read(profileViewModelProvider.notifier).toggleAppLock(val),
+              onChanged: (val) => ref
+                  .read(profileViewModelProvider.notifier)
+                  .toggleAppLock(val),
               contentPadding: EdgeInsets.zero,
             ),
             const Divider(),
             SwitchListTile(
-              title: const Text('Hide Dashboard Balance', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              subtitle: const Text('Replaces saved portfolio figures with asterisks.', style: AppTextStyles.caption),
+              title: const Text(
+                'Hide Dashboard Balance',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text(
+                'Replaces saved portfolio figures with asterisks.',
+                style: AppTextStyles.caption,
+              ),
               value: state.hideBalance,
-              onChanged: (val) => ref.read(profileViewModelProvider.notifier).toggleHideBalance(val),
+              onChanged: (val) => ref
+                  .read(profileViewModelProvider.notifier)
+                  .toggleHideBalance(val),
               contentPadding: EdgeInsets.zero,
             ),
           ],
@@ -434,10 +569,12 @@ class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
 
   @override
-  State<NotificationSettingsScreen> createState() => _NotificationSettingsScreenState();
+  State<NotificationSettingsScreen> createState() =>
+      _NotificationSettingsScreenState();
 }
 
-class _NotificationSettingsScreenState extends State<NotificationSettingsScreen> {
+class _NotificationSettingsScreenState
+    extends State<NotificationSettingsScreen> {
   bool _reminders = true;
   bool _milestones = true;
   bool _deadlines = true;
@@ -445,30 +582,51 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Notifications Prefs')),
+      appBar: MiBackAppBar(
+        title: 'Notification Preferences',
+        onBackPressed: () => context.pop(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
             SwitchListTile(
-              title: const Text('Savings Reminders', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              subtitle: const Text('Weekly notifications when planning targets are due.', style: AppTextStyles.caption),
+              title: const Text(
+                'Savings Reminders',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text(
+                'Weekly notifications when planning targets are due.',
+                style: AppTextStyles.caption,
+              ),
               value: _reminders,
               onChanged: (val) => setState(() => _reminders = val),
               contentPadding: EdgeInsets.zero,
             ),
             const Divider(),
             SwitchListTile(
-              title: const Text('Goal Milestones', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              subtitle: const Text('Alert me when goals cross 25%, 50% benchmarks.', style: AppTextStyles.caption),
+              title: const Text(
+                'Goal Milestones',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text(
+                'Alert me when goals cross 25%, 50% benchmarks.',
+                style: AppTextStyles.caption,
+              ),
               value: _milestones,
               onChanged: (val) => setState(() => _milestones = val),
               contentPadding: EdgeInsets.zero,
             ),
             const Divider(),
             SwitchListTile(
-              title: const Text('Deadline warnings', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-              subtitle: const Text('Receive planning indicators 30 days before deadline.', style: AppTextStyles.caption),
+              title: const Text(
+                'Deadline warnings',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+              subtitle: const Text(
+                'Receive planning indicators 30 days before deadline.',
+                style: AppTextStyles.caption,
+              ),
               value: _deadlines,
               onChanged: (val) => setState(() => _deadlines = val),
               contentPadding: EdgeInsets.zero,
@@ -489,17 +647,25 @@ class ThemeSettingsScreen extends ConsumerWidget {
     final state = ref.watch(profileViewModelProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Theme Settings')),
+      appBar: MiBackAppBar(
+        title: 'Theme Settings',
+        onBackPressed: () => context.pop(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Choose Application Mode', style: AppTextStyles.headlineLarge),
+            const Text(
+              'Choose Application Mode',
+              style: AppTextStyles.headlineLarge,
+            ),
             AppSpacing.heightS,
             Text(
               'Select standard light styling or high contrast dark midnight modes.',
-              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 32),
             Center(
@@ -523,7 +689,9 @@ class ThemeSettingsScreen extends ConsumerWidget {
                 ],
                 selected: {state.themeMode},
                 onSelectionChanged: (Set<ThemeMode> newSelection) {
-                  ref.read(profileViewModelProvider.notifier).toggleTheme(newSelection.first);
+                  ref
+                      .read(profileViewModelProvider.notifier)
+                      .toggleTheme(newSelection.first);
                 },
               ),
             ),
@@ -541,7 +709,10 @@ class PrivacyScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Privacy Policy')),
+      appBar: MiBackAppBar(
+        title: 'Privacy Policy',
+        onBackPressed: () => context.pop(),
+      ),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(24.0),
         child: Column(

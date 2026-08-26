@@ -48,7 +48,10 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
     final hasWarning = diff > 0;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Goal Balance')),
+      appBar: MiBackAppBar(
+        title: 'Goal Balance',
+        onBackPressed: () => context.pop(),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
         child: Column(
@@ -146,7 +149,7 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
             _allocationSlider('🏠 House Goal', _houseAlloc, 25000.0, (val) {
               setState(() => _houseAlloc = val);
             }),
-            _allocationSlider('✈️ Travel Goal', _travelAlloc, 15000.0, (val) {
+            _allocationSlider('🌍 Travel Goal', _travelAlloc, 15000.0, (val) {
               setState(() => _travelAlloc = val);
             }),
             const SizedBox(height: 24),

@@ -22,7 +22,8 @@ class HomeDashboardScreen extends ConsumerWidget {
     final aiState = ref.watch(aiViewModelProvider);
     final isLight = Theme.of(context).brightness == Brightness.light;
 
-    final userName = authState.user?.name ?? 'Pilot';
+    final userName = authState.user?.name ?? 'Mugesh';
+    final userInitials = userName.isNotEmpty ? userName[0].toUpperCase() : 'M';
 
     // Calculate total saved across goals
     double totalSaved = 0;
@@ -31,161 +32,163 @@ class HomeDashboardScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            ref.read(goalsViewModelProvider.notifier).loadGoals();
-            ref.read(goldViewModelProvider.notifier).loadGoldData();
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 16.0,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          ref.read(goalsViewModelProvider.notifier).loadGoals();
+          ref.read(goldViewModelProvider.notifier).loadGoldData();
+        },
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            MiSliverAppBar(
+              userName: userName,
+              avatarInitials: userInitials,
+              onAvatarTap: () => context.push('/profile'),
+              onNotificationTap: () => context.push('/notifications'),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header (Cockpit)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 16.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 16),
+
+                    // Total Saved Hero (Typography first)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Good Morning, $userName 👋',
-                          style: AppTextStyles.headlineLarge,
-                        ),
-                        AppSpacing.heightXXS,
-                        Text(
-                          "Here's where your goals stand today.",
+                          'TOTAL SAVED',
                           style: AppTextStyles.caption.copyWith(
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.8,
+                            fontSize: 10,
                             color: isLight
                                 ? AppColors.textSecondary
                                 : AppColors.textSecondaryDark,
                           ),
                         ),
-                      ],
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.notifications_none_outlined,
-                        size: 24,
-                      ),
-                      onPressed: () => context.push('/notifications'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 28),
-
-                // Total Saved Hero
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'TOTAL SAVED PORTFOLIO',
-                      style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    AppSpacing.heightXS,
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.baseline,
-                      textBaseline: TextBaseline.alphabetic,
-                      children: [
-                        MoneyDisplay(
-                          amount: totalSaved,
-                          style: AppTextStyles.displayLarge,
-                        ),
-                        const SizedBox(width: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.success.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Text(
-                            '+₹18,500 this month',
-                            style: AppTextStyles.caption.copyWith(
-                              color: AppColors.success,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 28),
-
-                // AI Insight
-                if (aiState.dashboardInsight != null) ...[
-                  AiInsightCard(
-                    title: aiState.dashboardInsight!.title,
-                    description: aiState.dashboardInsight!.description,
-                    onViewDetails: () => context.push('/ai'),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-
-                // Today's Action Section
-                Text(
-                  "TODAY'S NEXT STEP",
-                  style: AppTextStyles.caption.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                AppSpacing.heightS,
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: isLight ? Colors.white : AppColors.surfaceDark,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isLight ? AppColors.border : AppColors.borderDark,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: AppColors.secondary.withValues(alpha: 0.08),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Text('💍', style: TextStyle(fontSize: 16)),
-                      ),
-                      AppSpacing.widthM,
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        const SizedBox(height: 6),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
                           children: [
-                            const Text(
-                              'Wedding Ceremony',
-                              style: AppTextStyles.titleMedium,
-                            ),
-                            AppSpacing.heightXXS,
-                            Text(
-                              '₹750 remaining for this week\'s target.',
-                              style: AppTextStyles.caption.copyWith(
+                            MoneyDisplay(
+                              amount: totalSaved,
+                              style: AppTextStyles.displayLarge.copyWith(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
                                 color: isLight
-                                    ? AppColors.textSecondary
-                                    : AppColors.textSecondaryDark,
+                                    ? AppColors.textPrimary
+                                    : AppColors.textPrimaryDark,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.success.withValues(
+                                  alpha: 0.08,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '+₹18,500 this month',
+                                style: AppTextStyles.caption.copyWith(
+                                  color: AppColors.success,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
                               ),
                             ),
                           ],
                         ),
+                        const SizedBox(height: 12),
+                        // Very subtle progress line
+                        Container(
+                          height: 2,
+                          decoration: BoxDecoration(
+                            color: isLight
+                                ? AppColors.border
+                                : AppColors.borderDark,
+                            borderRadius: BorderRadius.circular(1),
+                          ),
+                          child: FractionallySizedBox(
+                            widthFactor: 0.65,
+                            child: Container(color: AppColors.secondary),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 28),
+
+                    // AI Insight
+                    if (aiState.dashboardInsight != null) ...[
+                      AiInsightCard(
+                        title: aiState.dashboardInsight!.title,
+                        description: aiState.dashboardInsight!.description,
+                        onViewDetails: () => context.push('/ai'),
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      const SizedBox(height: 28),
+                    ],
+
+                    // Today's Action Section
+                    const MiSectionHeader(title: "Today's Next Step"),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isLight ? Colors.white : AppColors.surfaceDark,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: isLight
+                              ? AppColors.border
+                              : AppColors.borderDark,
+                        ),
+                      ),
+                      child: Row(
                         children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withValues(
+                                alpha: 0.08,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Text(
+                              '💍',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          AppSpacing.widthM,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Marriage Goal',
+                                  style: AppTextStyles.titleMedium,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Save ₹750 this week to stay on plan.',
+                                  style: AppTextStyles.caption.copyWith(
+                                    color: isLight
+                                        ? AppColors.textSecondary
+                                        : AppColors.textSecondaryDark,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           ElevatedButton(
                             onPressed: () {
                               final marriageGoal = goalsState.goals.firstWhere(
@@ -195,203 +198,190 @@ class HomeDashboardScreen extends ConsumerWidget {
                               context.push('/add-saving/${marriageGoal.id}');
                             },
                             style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(90, 36),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
-                                vertical: 8,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            child: const Text('Add Saving'),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(50, 20),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              'Skip for now',
-                              style: AppTextStyles.caption.copyWith(
-                                decoration: TextDecoration.underline,
-                                fontSize: 10,
-                              ),
+                            child: const Text(
+                              'Add Saving',
+                              style: TextStyle(fontSize: 12),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 28),
-
-                // Gold Rates Snippet
-                if (goldState.livePrice != null) ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GoldPriceWidget(
-                          price: goldState.livePrice!.rate22K,
-                          change: goldState.livePrice!.dailyChangePercentage,
-                          karat: '22K',
-                        ),
-                      ),
-                      AppSpacing.widthM,
-                      Expanded(
-                        child: GoldPriceWidget(
-                          price: goldState.livePrice!.rate24K,
-                          change: goldState.livePrice!.dailyChangePercentage,
-                          karat: '24K',
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                ],
-
-                // Active goals header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'YOUR JOURNEY',
-                      style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
                     ),
-                    TextButton(
-                      onPressed: () => context.push('/goals'),
-                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                      child: Text(
-                        'See All',
-                        style: TextStyle(
-                          color: isLight
-                              ? AppColors.secondary
-                              : AppColors.primaryDark,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                AppSpacing.heightS,
+                    const SizedBox(height: 28),
 
-                // Goals List preview as compact editorial rows
-                if (goalsState.isLoading)
-                  const Center(child: CircularProgressIndicator())
-                else if (goalsState.goals.isEmpty)
-                  const EmptyState(
-                    title: 'No active goals yet',
-                    description: 'Start tracking your financial milestones.',
-                  )
-                else
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: goalsState.goals.take(3).length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 16),
-                    itemBuilder: (context, index) {
-                      final g = goalsState.goals[index];
-                      return InkWell(
-                        onTap: () => context.push('/goals/${g.id}'),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        g.type.emoji,
-                                        style: const TextStyle(fontSize: 18),
-                                      ),
-                                      AppSpacing.widthS,
-                                      Text(
-                                        g.name,
-                                        style: AppTextStyles.titleMedium,
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        '${(g.progressPercentage * 100).toStringAsFixed(0)}%',
-                                        style: AppTextStyles.titleMedium
-                                            .copyWith(
-                                              color: isLight
-                                                  ? AppColors.secondary
-                                                  : AppColors.primaryDark,
-                                              fontWeight: FontWeight.w800,
-                                            ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      GoalHealthBadge(health: g.health),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              AppSpacing.heightS,
-                              GoalJourneyProgress(
-                                progress: g.progressPercentage,
-                                health: g.health,
-                              ),
-                              AppSpacing.heightS,
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'Saved: ',
-                                        style: AppTextStyles.caption,
-                                      ),
-                                      MoneyDisplay(
-                                        amount: g.currentSavings,
-                                        style: AppTextStyles.caption.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const Text(
-                                        ' of ',
-                                        style: AppTextStyles.caption,
-                                      ),
-                                      MoneyDisplay(
-                                        amount: g.targetAmount,
-                                        style: AppTextStyles.caption.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    DateFormat('MMM yyyy').format(g.targetDate),
-                                    style: AppTextStyles.caption,
-                                  ),
-                                ],
-                              ),
-                              AppSpacing.heightS,
-                              const Divider(height: 1),
-                            ],
+                    // Gold Rates Snippet
+                    if (goldState.livePrice != null) ...[
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GoldPriceWidget(
+                              price: goldState.livePrice!.rate22K,
+                              change:
+                                  goldState.livePrice!.dailyChangePercentage,
+                              karat: '22K',
+                            ),
+                          ),
+                          AppSpacing.widthM,
+                          Expanded(
+                            child: GoldPriceWidget(
+                              price: goldState.livePrice!.rate24K,
+                              change:
+                                  goldState.livePrice!.dailyChangePercentage,
+                              karat: '24K',
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 28),
+                    ],
+
+                    // Active goals header
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const MiSectionHeader(title: "Your Journey"),
+                        TextButton(
+                          onPressed: () => context.push('/goals'),
+                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                          child: Text(
+                            'See All',
+                            style: TextStyle(
+                              color: isLight
+                                  ? AppColors.primary
+                                  : AppColors.primaryDark,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      );
-                    },
-                  ),
-              ],
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Goals List preview
+                    if (goalsState.isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else if (goalsState.goals.isEmpty)
+                      const EmptyState(
+                        title: 'No active goals yet',
+                        description: 'Start tracking your milestones.',
+                      )
+                    else
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: goalsState.goals.take(3).length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 16),
+                        itemBuilder: (context, index) {
+                          final g = goalsState.goals[index];
+                          return InkWell(
+                            onTap: () => context.push('/goals/${g.id}'),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            g.type.emoji,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          AppSpacing.widthS,
+                                          Text(
+                                            g.name,
+                                            style: AppTextStyles.titleMedium,
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '${(g.progressPercentage * 100).toStringAsFixed(0)}%',
+                                            style: AppTextStyles.titleMedium
+                                                .copyWith(
+                                                  color: isLight
+                                                      ? AppColors.primary
+                                                      : AppColors.primaryDark,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          GoalHealthBadge(health: g.health),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  AppSpacing.heightS,
+                                  GoalJourneyProgress(
+                                    progress: g.progressPercentage,
+                                    health: g.health,
+                                  ),
+                                  AppSpacing.heightS,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'Saved: ',
+                                            style: AppTextStyles.caption,
+                                          ),
+                                          MoneyDisplay(
+                                            amount: g.currentSavings,
+                                            style: AppTextStyles.caption
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                          const Text(
+                                            ' of ',
+                                            style: AppTextStyles.caption,
+                                          ),
+                                          MoneyDisplay(
+                                            amount: g.targetAmount,
+                                            style: AppTextStyles.caption
+                                                .copyWith(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        DateFormat(
+                                          'MMM yyyy',
+                                        ).format(g.targetDate),
+                                        style: AppTextStyles.caption,
+                                      ),
+                                    ],
+                                  ),
+                                  AppSpacing.heightS,
+                                  const Divider(height: 1),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/ai'),
-        backgroundColor: AppColors.secondary,
-        foregroundColor: Colors.white,
-        child: const Text('✨', style: TextStyle(fontSize: 20)),
       ),
     );
   }
@@ -438,52 +428,49 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
       totalSaved += g.currentSavings;
     }
 
+    final formatter = NumberFormat.currency(
+      locale: 'en_IN',
+      symbol: '₹',
+      decimalDigits: 0,
+    );
+    final formattedSaved = formatter.format(totalSaved);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Goals'),
+      appBar: MiAppBar(
+        title: 'My Goals',
+        subtitle: '${state.goals.length} active goals · $formattedSaved saved',
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () => context.push('/goal-selection'),
+          GestureDetector(
+            onTap: () => context.push('/goal-selection'),
+            child: Container(
+              margin: const EdgeInsets.only(right: 12),
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.accent.withValues(alpha: 0.1),
+                border: Border.all(color: AppColors.accent, width: 1.5),
+              ),
+              child: const Icon(Icons.add, color: AppColors.accent, size: 18),
+            ),
           ),
           IconButton(
-            icon: const Icon(Icons.tune_outlined),
+            icon: Icon(
+              Icons.tune_outlined,
+              color: isLight
+                  ? AppColors.textPrimary
+                  : AppColors.textPrimaryDark,
+              size: 20,
+            ),
             onPressed: () => context.push('/multi-goal'),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Summary Row
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 8.0,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${state.goals.length} active plans',
-                  style: AppTextStyles.caption.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Row(
-                  children: [
-                    const Text('Total Saved: ', style: AppTextStyles.caption),
-                    MoneyDisplay(
-                      amount: totalSaved,
-                      style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          const SizedBox(height: 8),
           // Filter Row
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -509,19 +496,33 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
                         if (val) setState(() => _filter = tab);
                       },
                       selectedColor: isLight
-                          ? AppColors.secondary.withValues(alpha: 0.1)
-                          : AppColors.secondaryDark.withValues(alpha: 0.2),
+                          ? AppColors.secondary.withValues(alpha: 0.08)
+                          : AppColors.secondaryDark.withValues(alpha: 0.15),
                       checkmarkColor: isLight
-                          ? AppColors.secondary
+                          ? AppColors.primary
                           : AppColors.primaryDark,
                       labelStyle: TextStyle(
                         color: isSelected
                             ? (isLight
-                                  ? AppColors.secondary
+                                  ? AppColors.primary
                                   : AppColors.primaryDark)
                             : (isLight
                                   ? AppColors.textSecondary
                                   : AppColors.textSecondaryDark),
+                      ),
+                      backgroundColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(
+                          color: isSelected
+                              ? (isLight
+                                    ? AppColors.primary
+                                    : AppColors.primaryDark)
+                              : (isLight
+                                    ? AppColors.border
+                                    : AppColors.borderDark),
+                          width: 1.0,
+                        ),
                       ),
                     ),
                   );
@@ -546,82 +547,83 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
                       final g = filtered[index];
                       return InkWell(
                         onTap: () => context.push('/goals/${g.id}'),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      g.type.emoji,
-                                      style: const TextStyle(fontSize: 22),
-                                    ),
-                                    AppSpacing.widthS,
-                                    Text(
-                                      g.name,
-                                      style: AppTextStyles.titleLarge,
-                                    ),
-                                  ],
-                                ),
-                                GoalHealthBadge(health: g.health),
-                              ],
-                            ),
-                            AppSpacing.heightS,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Text(
-                                      'Saved: ',
-                                      style: AppTextStyles.caption,
-                                    ),
-                                    MoneyDisplay(
-                                      amount: g.currentSavings,
-                                      style: AppTextStyles.caption.copyWith(
-                                        fontWeight: FontWeight.bold,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        g.type.emoji,
+                                        style: const TextStyle(fontSize: 22),
                                       ),
-                                    ),
-                                    const Text(
-                                      ' of ',
-                                      style: AppTextStyles.caption,
-                                    ),
-                                    MoneyDisplay(
-                                      amount: g.targetAmount,
-                                      style: AppTextStyles.caption.copyWith(
-                                        fontWeight: FontWeight.bold,
+                                      AppSpacing.widthS,
+                                      Text(
+                                        g.name,
+                                        style: AppTextStyles.titleLarge
+                                            .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  '${(g.progressPercentage * 100).toStringAsFixed(0)}%',
-                                  style: AppTextStyles.labelLarge.copyWith(
-                                    color: isLight
-                                        ? AppColors.secondary
-                                        : AppColors.primaryDark,
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            AppSpacing.heightS,
-                            GoalJourneyProgress(
-                              progress: g.progressPercentage,
-                              health: g.health,
-                            ),
-                            AppSpacing.heightS,
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                'Target: ${DateFormat('dd MMM yyyy').format(g.targetDate)}',
-                                style: AppTextStyles.caption,
+                                  GoalHealthBadge(health: g.health),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 12),
-                            const Divider(height: 1),
-                          ],
+                              AppSpacing.heightS,
+                              GoalJourneyProgress(
+                                progress: g.progressPercentage,
+                                health: g.health,
+                              ),
+                              AppSpacing.heightS,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Saved: ',
+                                        style: AppTextStyles.caption,
+                                      ),
+                                      MoneyDisplay(
+                                        amount: g.currentSavings,
+                                        style: AppTextStyles.caption.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const Text(
+                                        ' of ',
+                                        style: AppTextStyles.caption,
+                                      ),
+                                      MoneyDisplay(
+                                        amount: g.targetAmount,
+                                        style: AppTextStyles.caption.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Text(
+                                    '${(g.progressPercentage * 100).toStringAsFixed(0)}%',
+                                    style: AppTextStyles.caption.copyWith(
+                                      color: isLight
+                                          ? AppColors.primary
+                                          : AppColors.primaryDark,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              AppSpacing.heightS,
+                              const Divider(height: 1),
+                            ],
+                          ),
                         ),
                       );
                     },
@@ -1195,8 +1197,14 @@ class GoalDetailScreen extends ConsumerWidget {
     return DefaultTabController(
       length: isMarriage ? 5 : 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('${g.type.emoji} ${g.name}'),
+        appBar: MiAppBar(
+          title: '${g.type.emoji} ${g.name}',
+          subtitle:
+              '${(g.progressPercentage * 100).toStringAsFixed(0)}% saved · ${g.health.label.toUpperCase()}',
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, size: 20),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           actions: [
             if (isMarriage)
               IconButton(
@@ -1735,7 +1743,6 @@ class _AddSavingScreenState extends ConsumerState<AddSavingScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     if (_isSuccess) {
       return Scaffold(
         body: Padding(

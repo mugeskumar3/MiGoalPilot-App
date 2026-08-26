@@ -52,39 +52,16 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
     final isLight = Theme.of(context).brightness == Brightness.light;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('GoalPilot AI')),
+      appBar: MiAppBar(
+        title: '✨ GoalPilot AI',
+        subtitle: 'Your personal goal companion',
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 20),
+          onPressed: () => context.pop(),
+        ),
+      ),
       body: Column(
         children: [
-          // Subheader banner
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-            decoration: BoxDecoration(
-              color: isLight
-                  ? AppColors.secondary.withValues(alpha: 0.04)
-                  : AppColors.surfaceDark,
-              border: Border(
-                bottom: BorderSide(
-                  color: isLight ? AppColors.border : AppColors.borderDark,
-                ),
-              ),
-            ),
-            child: Row(
-              children: [
-                const Text('✨', style: TextStyle(fontSize: 16)),
-                AppSpacing.widthS,
-                Expanded(
-                  child: Text(
-                    'GoalPilot co-pilot. Simulate budgets and ask planning advice.',
-                    style: AppTextStyles.caption.copyWith(
-                      color: isLight
-                          ? AppColors.textSecondary
-                          : AppColors.textSecondaryDark,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
 
           // Message log / suggestions
           Expanded(
@@ -180,7 +157,7 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('✈️', style: TextStyle(fontSize: 48)),
+          const Text('✨', style: TextStyle(fontSize: 40)),
           AppSpacing.heightM,
           const Text('Suggested Actions', style: AppTextStyles.titleLarge),
           AppSpacing.heightS,
@@ -432,7 +409,10 @@ class _AiGoalCreationScreenState extends ConsumerState<AiGoalCreationScreen> {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Goal Creation')),
+      appBar: MiBackAppBar(
+        title: 'AI Goal Creation',
+        onBackPressed: () => context.pop(),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(

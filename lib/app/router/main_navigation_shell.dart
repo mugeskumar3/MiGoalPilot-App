@@ -90,7 +90,9 @@ class MainNavigationShell extends StatelessWidget {
     final isLight = Theme.of(context).brightness == Brightness.light;
     
     final activeColor = isLight ? AppColors.primary : AppColors.primaryDark;
-    final inactiveColor = isLight ? AppColors.textSecondary : AppColors.textSecondaryDark;
+    final inactiveColor = isLight 
+        ? const Color(0xFF8C9A93) 
+        : const Color(0xFF68736C);
 
     return Expanded(
       child: InkWell(
@@ -103,15 +105,25 @@ class MainNavigationShell extends StatelessWidget {
             Icon(
               active ? selectedIcon : icon,
               color: active ? activeColor : inactiveColor,
-              size: 22,
+              size: 20,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               label,
               style: TextStyle(
                 fontSize: 10,
-                fontWeight: active ? FontWeight.bold : FontWeight.normal,
+                fontWeight: active ? FontWeight.bold : FontWeight.w500,
                 color: active ? activeColor : inactiveColor,
+              ),
+            ),
+            const SizedBox(height: 3),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: active ? 4.0 : 0.0,
+              height: active ? 4.0 : 0.0,
+              decoration: const BoxDecoration(
+                color: AppColors.accent, 
+                shape: BoxShape.circle,
               ),
             ),
           ],

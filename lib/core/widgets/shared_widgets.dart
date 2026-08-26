@@ -159,14 +159,42 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('START', style: AppTextStyles.caption),
-                const Text('25%', style: AppTextStyles.caption),
-                const Text('50%', style: AppTextStyles.caption),
-                const Text('75%', style: AppTextStyles.caption),
+                Text(
+                  'START',
+                  style: AppTextStyles.caption.copyWith(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                Text(
+                  '25%',
+                  style: AppTextStyles.caption.copyWith(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  '50%',
+                  style: AppTextStyles.caption.copyWith(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  '75%',
+                  style: AppTextStyles.caption.copyWith(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
                 Text(
                   'TARGET',
                   style: AppTextStyles.caption.copyWith(
                     fontWeight: FontWeight.bold,
+                    fontSize: 9,
+                    color: isLight ? AppColors.primary : AppColors.primaryDark,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ],
@@ -180,77 +208,82 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                 return Stack(
                   alignment: Alignment.centerLeft,
                   children: [
-                    // Base line
+                    // Base line (Ivory/Gray path)
                     Container(
-                      height: 4,
+                      height: 3,
                       width: width,
                       decoration: BoxDecoration(
                         color: isLight
                             ? AppColors.border
                             : AppColors.borderDark,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(1.5),
                       ),
                     ),
-                    // Active line
+                    // Active line (Green progress path)
                     Container(
-                      height: 4,
+                      height: 3,
                       width: width * currentProgress,
                       decoration: BoxDecoration(
                         color: color,
-                        borderRadius: BorderRadius.circular(2),
+                        borderRadius: BorderRadius.circular(1.5),
                       ),
                     ),
-                    // Dotted milestone markers
+                    // Dotted milestone markers (Champagne Gold dots)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(5, (index) {
                         final markerPct = index * 0.25;
                         final isMarkerPassed = currentProgress >= markerPct;
                         return Container(
-                          width: 10,
-                          height: 10,
+                          width: 8,
+                          height: 8,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: isMarkerPassed
-                                ? color
+                                ? AppColors
+                                      .accent // Champagne Gold for milestones
                                 : (isLight
-                                      ? Colors.white
-                                      : AppColors.surfaceDark),
+                                      ? AppColors.border
+                                      : AppColors.borderDark),
                             border: Border.all(
-                              color: isMarkerPassed
-                                  ? color
-                                  : (isLight
-                                        ? AppColors.border
-                                        : AppColors.borderDark),
-                              width: 2,
+                              color: isLight
+                                  ? Colors.white
+                                  : AppColors.surfaceDark,
+                              width: 1,
                             ),
                           ),
                         );
                       }),
                     ),
-                    // Current Position plane/node overlay
+                    // Current Position indicator (Premium double ring, no plane emoji)
                     if (currentProgress > 0 && currentProgress < 1.0)
                       Positioned(
-                        left: (width * currentProgress) - 10,
+                        left: (width * currentProgress) - 8,
                         child: Container(
-                          width: 20,
-                          height: 20,
+                          width: 16,
+                          height: 16,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: isLight
+                                ? Colors.white
+                                : AppColors.surfaceDark,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: color.withValues(alpha: 0.3),
-                                blurRadius: 6,
+                                color: color.withValues(alpha: 0.2),
+                                blurRadius: 4,
                                 spreadRadius: 1,
                               ),
                             ],
-                            border: Border.all(color: color, width: 3),
+                            border: Border.all(color: color, width: 2),
                           ),
-                          child: const Center(
-                            child: Text(
-                              '✈️',
-                              style: TextStyle(fontSize: 8, height: 1.0),
+                          child: Center(
+                            child: Container(
+                              width: 6,
+                              height: 6,
+                              decoration: const BoxDecoration(
+                                color: AppColors.accent, // Gold core
+                                shape: BoxShape.circle,
+                              ),
                             ),
                           ),
                         ),
@@ -562,6 +595,7 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final String? Function(String?)? validator;
+  final Widget? prefixIcon;
   final Widget? suffixIcon;
   final ValueChanged<String>? onChanged;
 
@@ -573,6 +607,7 @@ class AppTextField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.prefixIcon,
     this.suffixIcon,
     this.onChanged,
   });
@@ -589,6 +624,7 @@ class AppTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
       ),
     );
@@ -737,5 +773,326 @@ class EmptyState extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+// --- MiAppBar ---
+class MiAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final String? subtitle;
+  final Widget? leading;
+  final List<Widget>? actions;
+  final bool centerTitle;
+
+  const MiAppBar({
+    super.key,
+    required this.title,
+    this.subtitle,
+    this.leading,
+    this.actions,
+    this.centerTitle = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    return AppBar(
+      title: Column(
+        crossAxisAlignment: centerTitle
+            ? CrossAxisAlignment.center
+            : CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: isLight
+                  ? AppColors.textPrimary
+                  : AppColors.textPrimaryDark,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          if (subtitle != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              subtitle!,
+              style: AppTextStyles.caption.copyWith(
+                color: isLight
+                    ? AppColors.textSecondary
+                    : AppColors.textSecondaryDark,
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ],
+      ),
+      leading: leading,
+      actions: actions,
+      centerTitle: centerTitle,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(56.0);
+}
+
+// --- MiBackAppBar ---
+class MiBackAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final List<Widget>? actions;
+  final VoidCallback? onBackPressed;
+
+  const MiBackAppBar({
+    super.key,
+    required this.title,
+    this.actions,
+    this.onBackPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    return AppBar(
+      title: Text(
+        title,
+        style: TextStyle(
+          color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+          fontWeight: FontWeight.bold,
+          fontSize: 18,
+        ),
+      ),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, size: 20),
+        onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+      ),
+      actions: actions,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(56.0);
+}
+
+// --- MiSectionHeader ---
+class MiSectionHeader extends StatelessWidget {
+  final String title;
+
+  const MiSectionHeader({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
+      child: Text(
+        title.toUpperCase(),
+        style: AppTextStyles.caption.copyWith(
+          color: isLight
+              ? AppColors.textSecondary
+              : AppColors.textSecondaryDark,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 0.8,
+          fontSize: 10,
+        ),
+      ),
+    );
+  }
+}
+
+// --- MiSliverAppBar ---
+class MiSliverAppBar extends StatelessWidget {
+  final String userName;
+  final String avatarInitials;
+  final VoidCallback? onAvatarTap;
+  final VoidCallback? onNotificationTap;
+
+  const MiSliverAppBar({
+    super.key,
+    required this.userName,
+    this.avatarInitials = 'M',
+    this.onAvatarTap,
+    this.onNotificationTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
+    return SliverPersistentHeader(
+      pinned: true,
+      delegate: _MiSliverAppBarDelegate(
+        topPadding: topPadding,
+        userName: userName,
+        avatarInitials: avatarInitials,
+        onAvatarTap: onAvatarTap,
+        onNotificationTap: onNotificationTap,
+        isLight: Theme.of(context).brightness == Brightness.light,
+      ),
+    );
+  }
+}
+
+class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final double topPadding;
+  final String userName;
+  final String avatarInitials;
+  final VoidCallback? onAvatarTap;
+  final VoidCallback? onNotificationTap;
+  final bool isLight;
+
+  _MiSliverAppBarDelegate({
+    required this.topPadding,
+    required this.userName,
+    required this.avatarInitials,
+    this.onAvatarTap,
+    this.onNotificationTap,
+    required this.isLight,
+  });
+
+  @override
+  double get minExtent => 60.0 + topPadding;
+
+  @override
+  double get maxExtent => 130.0 + topPadding;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    final double currentMax = maxExtent;
+    final double currentMin = minExtent;
+    final double delta = currentMax - currentMin;
+    final double t = (shrinkOffset / delta).clamp(0.0, 1.0);
+
+    final double avatarSize = 44.0 + (32.0 - 44.0) * t;
+
+    final bgColor = isLight ? AppColors.background : AppColors.backgroundDark;
+
+    return Container(
+      color: bgColor.withValues(alpha: t > 0.8 ? 0.98 : 1.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.only(top: topPadding),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // Greeting & Subtitle (Large state)
+            Opacity(
+              opacity: (1.0 - t * 2.0).clamp(0.0, 1.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Good morning,\n$userName 👋',
+                      style: AppTextStyles.displayLarge.copyWith(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: isLight
+                            ? AppColors.textPrimary
+                            : AppColors.textPrimaryDark,
+                        height: 1.25,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "Let's move your goals forward.",
+                      style: AppTextStyles.caption.copyWith(
+                        color: isLight
+                            ? AppColors.textSecondary
+                            : AppColors.textSecondaryDark,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Collapsed Title state ("MiGoalPilot")
+            Opacity(
+              opacity: (t - 0.5).clamp(0.0, 1.0) * 2.0,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'MiGoalPilot',
+                  style: AppTextStyles.headlineLarge.copyWith(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w800,
+                    color: isLight ? AppColors.primary : AppColors.primaryDark,
+                  ),
+                ),
+              ),
+            ),
+            // Avatar (Right side)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (onNotificationTap != null && t > 0.6) ...[
+                    IconButton(
+                      icon: Icon(
+                        Icons.notifications_none_outlined,
+                        color: isLight
+                            ? AppColors.textPrimary
+                            : AppColors.textPrimaryDark,
+                        size: 22,
+                      ),
+                      onPressed: onNotificationTap,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
+                  GestureDetector(
+                    onTap: onAvatarTap,
+                    child: Container(
+                      width: avatarSize,
+                      height: avatarSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isLight ? Colors.white : AppColors.surfaceDark,
+                        border: Border.all(
+                          color: AppColors.accent,
+                          width: t > 0.5 ? 1.0 : 1.5,
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          avatarInitials,
+                          style: TextStyle(
+                            fontSize: avatarSize * 0.4,
+                            fontWeight: FontWeight.bold,
+                            color: isLight
+                                ? AppColors.primary
+                                : AppColors.primaryDark,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _MiSliverAppBarDelegate oldDelegate) {
+    return oldDelegate.userName != userName ||
+        oldDelegate.avatarInitials != avatarInitials ||
+        oldDelegate.isLight != isLight;
   }
 }

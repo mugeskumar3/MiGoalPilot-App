@@ -20,8 +20,9 @@ class CoupleModeScreen extends ConsumerWidget {
     final sharedGoals = goalsState.goals.where((g) => g.isShared).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Couple Shared Mode'),
+      appBar: MiBackAppBar(
+        title: 'Couple Shared Mode',
+        onBackPressed: () => context.pop(),
         actions: [
           IconButton(
             icon: const Icon(Icons.person_add_alt_1_outlined),
@@ -264,7 +265,10 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      appBar: AppBar(title: const Text('Invite Partner')),
+      appBar: MiBackAppBar(
+        title: 'Invite Partner',
+        onBackPressed: () => context.pop(),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
