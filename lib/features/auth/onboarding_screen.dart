@@ -108,7 +108,6 @@ class OnboardingScreen extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              // Page indicators
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(3, (index) {

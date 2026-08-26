@@ -5,7 +5,6 @@ import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
 import 'package:migoalpilot_app/app/theme/app_spacing.dart';
 import 'package:migoalpilot_app/shared/enums/enums.dart';
 
-// --- MoneyDisplay ---
 class MoneyDisplay extends StatelessWidget {
   final double amount;
   final TextStyle? style;
@@ -44,7 +43,6 @@ class MoneyDisplay extends StatelessWidget {
   }
 }
 
-// --- GoalProgress (Polished standard bar) ---
 class GoalProgress extends StatelessWidget {
   final double progress;
   final double height;
@@ -74,7 +72,6 @@ class GoalProgress extends StatelessWidget {
   }
 }
 
-// --- GoalJourneyProgress (Premium visual progress line with milestones) ---
 class GoalJourneyProgress extends StatefulWidget {
   final double progress;
   final GoalHealth health;
@@ -155,7 +152,6 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
         final double width = constraints.maxWidth;
         return Column(
           children: [
-            // Timeline Node labels
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -200,7 +196,6 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
               ],
             ),
             AppSpacing.heightXS,
-            // Visual line with milestones
             AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
@@ -208,7 +203,6 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                 return Stack(
                   alignment: Alignment.centerLeft,
                   children: [
-                    // Base line (Ivory/Gray path)
                     Container(
                       height: 3,
                       width: width,
@@ -219,7 +213,6 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                         borderRadius: BorderRadius.circular(1.5),
                       ),
                     ),
-                    // Active line (Green progress path)
                     Container(
                       height: 3,
                       width: width * currentProgress,
@@ -228,7 +221,6 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                         borderRadius: BorderRadius.circular(1.5),
                       ),
                     ),
-                    // Dotted milestone markers (Champagne Gold dots)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(5, (index) {
@@ -241,7 +233,7 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                             shape: BoxShape.circle,
                             color: isMarkerPassed
                                 ? AppColors
-                                      .accent // Champagne Gold for milestones
+                                      .accent
                                 : (isLight
                                       ? AppColors.border
                                       : AppColors.borderDark),
@@ -255,7 +247,6 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                         );
                       }),
                     ),
-                    // Current Position indicator (Premium double ring, no plane emoji)
                     if (currentProgress > 0 && currentProgress < 1.0)
                       Positioned(
                         left: (width * currentProgress) - 8,
@@ -281,7 +272,7 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                               width: 6,
                               height: 6,
                               decoration: const BoxDecoration(
-                                color: AppColors.accent, // Gold core
+                                color: AppColors.accent,
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -299,7 +290,6 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
   }
 }
 
-// --- GoalHealthBadge ---
 class GoalHealthBadge extends StatelessWidget {
   final GoalHealth health;
 
@@ -354,7 +344,6 @@ class GoalHealthBadge extends StatelessWidget {
   }
 }
 
-// --- GoldPriceWidget ---
 class GoldPriceWidget extends StatelessWidget {
   final double price;
   final double change;
@@ -412,7 +401,6 @@ class GoldPriceWidget extends StatelessWidget {
   }
 }
 
-// --- PriceChangeIndicator ---
 class PriceChangeIndicator extends StatelessWidget {
   final double change;
 
@@ -449,7 +437,6 @@ class PriceChangeIndicator extends StatelessWidget {
   }
 }
 
-// --- AiInsightCard ---
 class AiInsightCard extends StatelessWidget {
   final String title;
   final String description;
@@ -533,7 +520,6 @@ class AiInsightCard extends StatelessWidget {
   }
 }
 
-// --- PrimaryButton ---
 class PrimaryButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -567,7 +553,6 @@ class PrimaryButton extends StatelessWidget {
   }
 }
 
-// --- SecondaryButton ---
 class SecondaryButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
@@ -587,7 +572,6 @@ class SecondaryButton extends StatelessWidget {
   }
 }
 
-// --- AppTextField ---
 class AppTextField extends StatelessWidget {
   final String label;
   final String? hint;
@@ -631,7 +615,6 @@ class AppTextField extends StatelessWidget {
   }
 }
 
-// --- SkeletonLoader (Premium Shimmer/Skeleton Block) ---
 class SkeletonLoader extends StatelessWidget {
   final double width;
   final double height;
@@ -660,7 +643,6 @@ class SkeletonLoader extends StatelessWidget {
   }
 }
 
-// --- LoadingState (Clean Editorial Skeletons) ---
 class LoadingState extends StatelessWidget {
   const LoadingState({super.key});
 
@@ -688,7 +670,6 @@ class LoadingState extends StatelessWidget {
   }
 }
 
-// --- ErrorState ---
 class ErrorState extends StatelessWidget {
   final String error;
   final VoidCallback onRetry;
@@ -727,7 +708,6 @@ class ErrorState extends StatelessWidget {
   }
 }
 
-// --- EmptyState ---
 class EmptyState extends StatelessWidget {
   final String title;
   final String description;
@@ -776,7 +756,6 @@ class EmptyState extends StatelessWidget {
   }
 }
 
-// --- MiAppBar ---
 class MiAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
@@ -840,7 +819,6 @@ class MiAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(56.0);
 }
 
-// --- MiBackAppBar ---
 class MiBackAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
@@ -880,7 +858,6 @@ class MiBackAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(56.0);
 }
 
-// --- MiSectionHeader ---
 class MiSectionHeader extends StatelessWidget {
   final String title;
 
@@ -906,7 +883,6 @@ class MiSectionHeader extends StatelessWidget {
   }
 }
 
-// --- MiSliverAppBar ---
 class MiSliverAppBar extends StatelessWidget {
   final String userName;
   final String avatarInitials;
@@ -985,7 +961,6 @@ class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Greeting & Subtitle (Large state)
             Opacity(
               opacity: (1.0 - t * 2.0).clamp(0.0, 1.0),
               child: Align(
@@ -1019,7 +994,6 @@ class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                 ),
               ),
             ),
-            // Collapsed Title state ("MiGoalPilot")
             Opacity(
               opacity: (t - 0.5).clamp(0.0, 1.0) * 2.0,
               child: Align(
@@ -1034,7 +1008,6 @@ class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                 ),
               ),
             ),
-            // Avatar (Right side)
             Align(
               alignment: Alignment.centerRight,
               child: Row(
@@ -1097,7 +1070,6 @@ class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 }
 
-// --- AppFadeInSlide Animation Utility ---
 class AppFadeInSlide extends StatefulWidget {
   final Widget child;
   final Duration duration;

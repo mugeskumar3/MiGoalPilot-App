@@ -10,7 +10,6 @@ import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
 import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
 import 'package:migoalpilot_app/shared/enums/enums.dart';
 
-// --- 19. GOLD DASHBOARD ---
 class GoldDashboardScreen extends ConsumerStatefulWidget {
   const GoldDashboardScreen({super.key});
 
@@ -41,7 +40,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
     final goalsState = ref.watch(goalsViewModelProvider);
     final isLight = Theme.of(context).brightness == Brightness.light;
 
-    // Filter gold goals
     final goldGoals = goalsState.goals
         .where((g) => g.type == GoalType.gold)
         .toList();
@@ -74,7 +72,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
               if (state.isLoading && state.livePrice == null)
                 const LoadingState()
               else if (state.livePrice != null) ...[
-                // Market Rate columns
                 Row(
                   children: [
                     Expanded(
@@ -106,7 +103,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Opportunity Notification Banner
                 if (state.livePrice!.dailyChangePercentage < -1.0) ...[
                   Container(
                     width: double.infinity,
@@ -146,7 +142,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                   const SizedBox(height: 28),
                 ],
 
-                // Range Selector header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -202,7 +197,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                 ),
                 AppSpacing.heightM,
 
-                // fl_chart graph container (Redesigned with Emerald curve + Champagne point)
                 Container(
                   height: 180,
                   padding: const EdgeInsets.only(top: 12, right: 16, bottom: 4),
@@ -232,7 +226,7 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                                 }),
                                 isCurved: true,
                                 color:
-                                    AppColors.secondary, // Emerald Green Line
+                                    AppColors.secondary,
                                 barWidth: 2.5,
                                 dotData: FlDotData(
                                   show: true,
@@ -242,7 +236,7 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                                     return FlDotCirclePainter(
                                       radius: isLast ? 4 : 0,
                                       color: AppColors
-                                          .accent, // Champagne Gold Highlight
+                                          .accent,
                                       strokeColor: AppColors.accent,
                                       strokeWidth: 1,
                                     );
@@ -261,7 +255,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                 ),
                 const SizedBox(height: 28),
 
-                // Stats Section
                 Text(
                   'STATISTICS',
                   style: AppTextStyles.caption.copyWith(
@@ -275,7 +268,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                 _statIndexRow('30 Day Average', 12610),
                 const SizedBox(height: 28),
 
-                // Linked goals summary
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -374,7 +366,6 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
   }
 }
 
-// --- 21. GOLD GOAL DETAIL ---
 class GoldGoalDetailScreen extends ConsumerWidget {
   final String goalId;
 
@@ -488,7 +479,6 @@ class GoldGoalDetailScreen extends ConsumerWidget {
   }
 }
 
-// --- 22. GOLD ALERT SETTINGS (Now also maps route to full screen equivalent, matches bottom sheet design) ---
 class GoldAlertSettingsScreen extends ConsumerStatefulWidget {
   const GoldAlertSettingsScreen({super.key});
 
@@ -514,7 +504,6 @@ class _GoldAlertSettingsScreenState
   }
 }
 
-// --- Premium Alert Bottom Sheet/Form builder ---
 class _GoldAlertBottomSheetContent extends ConsumerStatefulWidget {
   final bool isFullScreenRoute;
 
@@ -580,7 +569,6 @@ class __GoldAlertBottomSheetContentState
           ),
           const SizedBox(height: 28),
 
-          // Alert Drop Options
           Text(
             'ALERT TRIGGER PRICE DROP',
             style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold),
@@ -599,7 +587,6 @@ class __GoldAlertBottomSheetContentState
           ),
           const SizedBox(height: 20),
 
-          // Daily summary
           SwitchListTile(
             title: const Text(
               'Daily Morning Update',

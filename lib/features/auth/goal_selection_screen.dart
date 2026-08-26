@@ -39,7 +39,6 @@ class GoalSelectionScreen extends StatelessWidget {
             ),
             const Spacer(),
 
-            // Manual Box
             InkWell(
               onTap: () => context.go('/create-goal'),
               borderRadius: BorderRadius.circular(12),
@@ -77,7 +76,6 @@ class GoalSelectionScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // AI Box
             InkWell(
               onTap: () => context.go('/ai-goal-creation'),
               borderRadius: BorderRadius.circular(12),

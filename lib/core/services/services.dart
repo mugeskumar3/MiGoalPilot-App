@@ -51,7 +51,6 @@ class StorageService {
 
 class ConnectivityService {
   Future<bool> get isConnected async {
-    // Simulating internet connection
     return true;
   }
 }

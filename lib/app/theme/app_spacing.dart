@@ -9,7 +9,6 @@ class AppSpacing {
   static const double xl = 32.0;
   static const double xxl = 48.0;
 
-  // Spacing helper widgets
   static const Widget heightXXS = SizedBox(height: xxs);
   static const Widget heightXS = SizedBox(height: xs);
   static const Widget heightS = SizedBox(height: s);

@@ -10,7 +10,6 @@ import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
 import 'package:migoalpilot_app/core/models/models.dart';
 import 'package:migoalpilot_app/shared/enums/enums.dart';
 
-// --- 10. HOME DASHBOARD ---
 class HomeDashboardScreen extends ConsumerWidget {
   const HomeDashboardScreen({super.key});
 
@@ -25,7 +24,6 @@ class HomeDashboardScreen extends ConsumerWidget {
     final userName = authState.user?.name ?? 'Mugesh';
     final userInitials = userName.isNotEmpty ? userName[0].toUpperCase() : 'M';
 
-    // Calculate total saved across goals
     double totalSaved = 0;
     for (var g in goalsState.goals) {
       totalSaved += g.currentSavings;
@@ -57,7 +55,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 16),
 
-                    // Total Saved Hero (Typography first)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -111,7 +108,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                           ],
                         ),
                         const SizedBox(height: 12),
-                        // Very subtle progress line
                         Container(
                           height: 2,
                           decoration: BoxDecoration(
@@ -129,7 +125,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 28),
 
-                    // AI Insight
                     if (aiState.dashboardInsight != null) ...[
                       AiInsightCard(
                         title: aiState.dashboardInsight!.title,
@@ -139,7 +134,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                       const SizedBox(height: 28),
                     ],
 
-                    // Today's Action Section
                     const MiSectionHeader(title: "Today's Next Step"),
                     const SizedBox(height: 8),
                     Container(
@@ -216,7 +210,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 28),
 
-                    // Gold Rates Snippet
                     if (goldState.livePrice != null) ...[
                       Row(
                         children: [
@@ -242,7 +235,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                       const SizedBox(height: 28),
                     ],
 
-                    // Active goals header
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -264,7 +256,6 @@ class HomeDashboardScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
 
-                    // Goals List preview
                     if (goalsState.isLoading)
                       const Center(child: CircularProgressIndicator())
                     else if (goalsState.goals.isEmpty)
@@ -387,7 +378,6 @@ class HomeDashboardScreen extends ConsumerWidget {
   }
 }
 
-// --- 11. GOALS LIST ---
 class GoalsScreen extends ConsumerStatefulWidget {
   const GoalsScreen({super.key});
 
@@ -422,7 +412,6 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
           .toList();
     }
 
-    // Calculations
     double totalSaved = 0;
     for (var g in state.goals) {
       totalSaved += g.currentSavings;
@@ -471,7 +460,6 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          // Filter Row
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -635,7 +623,6 @@ class _GoalsScreenState extends ConsumerState<GoalsScreen> {
   }
 }
 
-// --- 12. CREATE GOAL (6-step guided PageView flow) ---
 class CreateGoalScreen extends ConsumerStatefulWidget {
   const CreateGoalScreen({super.key});
 
@@ -734,7 +721,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
       ),
       body: Column(
         children: [
-          // Progress bar indicators
           Row(
             children: List.generate(6, (index) {
               final active = index <= _currentStep;
@@ -754,12 +740,12 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                _buildStep1(), // Goal Category Selection
-                _buildStep2(), // Goal Name & Amount
-                _buildStep3(), // Target Date Selector
-                _buildStep4(), // Current Savings
-                _buildStep5(), // Importance Priority
-                _buildStep6(), // Confirmation Draft
+                _buildStep1(),
+                _buildStep2(),
+                _buildStep3(),
+                _buildStep4(),
+                _buildStep5(),
+                _buildStep6(),
               ],
             ),
           ),
@@ -775,7 +761,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
     );
   }
 
-  // Step 1: Category Selection
   Widget _buildStep1() {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Padding(
@@ -856,7 +841,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
     );
   }
 
-  // Step 2: Goal Name & Value
   Widget _buildStep2() {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
@@ -899,7 +883,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
     );
   }
 
-  // Step 3: Date Picker
   Widget _buildStep3() {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Padding(
@@ -968,7 +951,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
     );
   }
 
-  // Step 4: Already Saved
   Widget _buildStep4() {
     return Padding(
       padding: const EdgeInsets.all(24.0),
@@ -997,7 +979,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
     );
   }
 
-  // Step 5: Importance Category
   Widget _buildStep5() {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Padding(
@@ -1070,7 +1051,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
     );
   }
 
-  // Step 6: Confirmation Plan
   Widget _buildStep6() {
     final name = _nameController.text.trim().isNotEmpty
         ? _nameController.text.trim()
@@ -1151,7 +1131,6 @@ class _CreateGoalScreenState extends ConsumerState<CreateGoalScreen> {
   }
 }
 
-// --- 13. GOAL DETAIL ---
 class GoalDetailScreen extends ConsumerWidget {
   final String goalId;
 
@@ -1187,7 +1166,6 @@ class GoalDetailScreen extends ConsumerWidget {
     final monthlyTarget = remaining / monthsLeft;
     final weeklyTarget = remaining / (daysLeft / 7).clamp(1.0, double.infinity);
 
-    // Watch marriage state if relevant
     final marriageState = g.type == GoalType.marriage
         ? ref.watch(marriageViewModelProvider)
         : null;
@@ -1215,7 +1193,6 @@ class GoalDetailScreen extends ConsumerWidget {
         ),
         body: Column(
           children: [
-            // Top Stats (Editorial style, no card border, spacious)
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
@@ -1310,7 +1287,6 @@ class GoalDetailScreen extends ConsumerWidget {
   }
 }
 
-// --- Overview Sub-Tab ---
 class _OverviewTab extends StatelessWidget {
   final double remaining;
   final double monthlyTarget;
@@ -1382,7 +1358,6 @@ class _OverviewTab extends StatelessWidget {
   }
 }
 
-// --- Savings Sub-Tab ---
 class _SavingsTab extends StatelessWidget {
   final List<SavingsTransaction> transactions;
 
@@ -1441,7 +1416,6 @@ class _SavingsTab extends StatelessWidget {
   }
 }
 
-// --- Redesigned Marriage Budget Tab directly inside Goal Details ---
 class _MarriageBudgetTab extends StatelessWidget {
   final MarriageState marriageState;
 
@@ -1453,7 +1427,6 @@ class _MarriageBudgetTab extends StatelessWidget {
     if (plan == null) {
       return const Center(child: Text('Marriage Plan not initialized.'));
     }
-    // Calculations
     double totalSpent = plan.budgetItems.fold(
       0,
       (sum, item) => sum + item.actualSpent,
@@ -1573,7 +1546,6 @@ class _MarriageBudgetTab extends StatelessWidget {
   }
 }
 
-// --- Redesigned Marriage Timeline Tab directly inside Goal Details ---
 class _MarriageTimelineTab extends StatelessWidget {
   final MarriageState marriageState;
   final WidgetRef ref;
@@ -1653,7 +1625,6 @@ class _MarriageTimelineTab extends StatelessWidget {
   }
 }
 
-// --- Goal AI Optimizer Tab ---
 class _AiOptimizerTab extends StatelessWidget {
   final Goal goal;
 
@@ -1700,7 +1671,6 @@ class _AiOptimizerTab extends StatelessWidget {
   }
 }
 
-// --- 14. ADD SAVINGS SCREEN (Celebration + Clean validation) ---
 class AddSavingScreen extends ConsumerStatefulWidget {
   final String goalId;
 

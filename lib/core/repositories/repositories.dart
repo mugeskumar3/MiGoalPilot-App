@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:migoalpilot_app/core/models/models.dart';
 import 'package:migoalpilot_app/shared/enums/enums.dart';
 
-// --- AUTHENTICATION ---
 abstract class AuthRepository {
   Future<User?> getCurrentUser();
   Future<User> login(String email, String password);
@@ -30,7 +29,7 @@ class MockAuthRepository implements AuthRepository {
       id: 'usr_1',
       name: email.split('@')[0].toUpperCase(),
       email: email,
-      partnerId: 'partner_1', // Pre-linked for Couple Mode demos
+      partnerId: 'partner_1',
     );
     return _currentUser!;
   }
@@ -53,7 +52,6 @@ class MockAuthRepository implements AuthRepository {
   }
 }
 
-// --- GOALS & SAVINGS ---
 abstract class GoalRepository {
   Future<List<Goal>> getGoals();
   Future<Goal> getGoal(String id);
@@ -72,7 +70,7 @@ class MockGoalRepository implements GoalRepository {
       type: GoalType.marriage,
       targetAmount: 1050000,
       currentSavings: 450000,
-      targetDate: DateTime.now().add(const Duration(days: 540)), // 18 months
+      targetDate: DateTime.now().add(const Duration(days: 540)),
       priority: GoalPriority.critical,
       health: GoalHealth.onTrack,
       isShared: true,
@@ -81,7 +79,7 @@ class MockGoalRepository implements GoalRepository {
       id: 'g_gold',
       name: 'Marriage Jewellery',
       type: GoalType.gold,
-      targetAmount: 250000, // Grams equivalent estimation
+      targetAmount: 250000,
       currentSavings: 93750,
       targetDate: DateTime.now().add(const Duration(days: 365)),
       priority: GoalPriority.high,
@@ -196,7 +194,6 @@ class MockGoalRepository implements GoalRepository {
   }
 }
 
-// --- MARRIAGE PLANNER ---
 abstract class MarriageRepository {
   Future<MarriagePlan> getPlan();
   Future<MarriagePlan> updateBudget(double total);
@@ -269,7 +266,6 @@ class MockMarriageRepository implements MarriageRepository {
   }
 }
 
-// --- GOLD PRICES & TARGETS ---
 abstract class GoldRepository {
   Future<GoldPrice> getLivePrice();
   Future<List<double>> getPriceHistory(String range);
@@ -278,7 +274,6 @@ abstract class GoldRepository {
 class MockGoldRepository implements GoldRepository {
   @override
   Future<GoldPrice> getLivePrice() async {
-    // 22K: ~₹12,500/g, 24K: ~₹13,640/g
     return GoldPrice(
       rate22K: 12500,
       rate24K: 13640,
@@ -289,18 +284,16 @@ class MockGoldRepository implements GoldRepository {
 
   @override
   Future<List<double>> getPriceHistory(String range) async {
-    // Generate simulated price points
     const basePrice = 12500.0;
     final points = range == '7D' ? 7 : range == '30D' ? 30 : 60;
     final rand = Random();
     return List.generate(points, (idx) {
-      final change = (rand.nextDouble() - 0.52) * 300; // slight negative trend to match downward narrative
+      final change = (rand.nextDouble() - 0.52) * 300;
       return basePrice + (idx * change);
     });
   }
 }
 
-// --- AI INTELLIGENCE ---
 abstract class AiRepository {
   Future<AiInsight> getDashboardInsight();
   Future<Map<String, dynamic>> parseGoalIntent(String query);
@@ -322,7 +315,6 @@ class MockAiRepository implements AiRepository {
   @override
   Future<Map<String, dynamic>> parseGoalIntent(String query) async {
     await Future.delayed(const Duration(seconds: 1));
-    // Simulated natural language parsing
     final q = query.toLowerCase();
     if (q.contains('car')) {
       return {
@@ -354,7 +346,7 @@ class MockAiRepository implements AiRepository {
   @override
   Future<String> simulateWhatIf(int newGuestCount, double previousBudget) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    const costPerGuest = 600.0; // ₹600 per guest
+    const costPerGuest = 600.0;
     final difference = (newGuestCount - 300) * costPerGuest;
     final total = previousBudget + difference;
     final monthlyAdd = difference / 18.0;
@@ -375,7 +367,6 @@ class MockAiRepository implements AiRepository {
   }
 }
 
-// --- NOTIFICATIONS ---
 abstract class NotificationRepository {
   Future<List<NotificationItem>> getNotifications();
 }

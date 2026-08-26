@@ -65,7 +65,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. Dark Top Banner with Bezier S-Curve Wave Edge
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -207,7 +206,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
             const SizedBox(height: 48),
 
-            // 2. Central Form Body
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Form(
@@ -291,7 +289,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Golden Pill Primary Action Button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -411,7 +408,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ),
             ),
 
-            // 3. Dark Bottom Wave Banner
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 20),

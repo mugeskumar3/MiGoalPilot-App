@@ -52,7 +52,6 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: const Color(0xFF0F172A),
       body: Stack(
         children: [
-          // Background Glow Decoration
           Positioned(
             top: -60,
             right: -60,

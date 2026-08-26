@@ -17,7 +17,6 @@ class MultiGoalScreen extends ConsumerStatefulWidget {
 class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
   final double _availableToSave = 50000.0;
 
-  // Custom local state variables to simulate slider allocations
   double _marriageAlloc = 25000.0;
   double _goldAlloc = 10000.0;
   double _houseAlloc = 15000.0;
@@ -27,8 +26,6 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
 
   void _applyOptimization() {
     setState(() {
-      // AI suggestion: extend Travel Goal by 4 months
-      // Mapped travel allocation decreases from 12500 to 0 (or down by 12500) to balance target
       _travelAlloc = 0;
       _isOptimized = true;
     });
@@ -41,7 +38,6 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Sum calculations
     final currentRequired =
         _marriageAlloc + _goldAlloc + _houseAlloc + _travelAlloc;
     final diff = currentRequired - _availableToSave;
@@ -57,7 +53,6 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title Header
             const Text('YOUR MONTHLY PLAN', style: AppTextStyles.headlineLarge),
             AppSpacing.heightS,
             Text(
@@ -68,7 +63,6 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Metrics Display
             Row(
               children: [
                 Expanded(
@@ -89,7 +83,6 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
             ),
             const SizedBox(height: 20),
 
-            // Warning Section
             if (hasWarning) ...[
               Container(
                 width: double.infinity,
@@ -129,7 +122,6 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
               const SizedBox(height: 24),
             ],
 
-            // Goal Allocations List with sliders
             Text(
               'GOAL ALLOCATIONS',
               style: AppTextStyles.caption.copyWith(
@@ -154,7 +146,6 @@ class _MultiGoalScreenState extends ConsumerState<MultiGoalScreen> {
             }),
             const SizedBox(height: 24),
 
-            // Co-pilot AI suggestion Card
             if (hasWarning && !_isOptimized) ...[
               AiInsightCard(
                 title: 'GoalPilot balance optimization',

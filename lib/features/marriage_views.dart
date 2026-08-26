@@ -9,7 +9,6 @@ import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
 import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
 import 'package:migoalpilot_app/core/models/models.dart';
 
-// --- 15. MARRIAGE PLANNER ---
 class MarriagePlannerScreen extends ConsumerWidget {
   const MarriagePlannerScreen({super.key});
 
@@ -67,7 +66,6 @@ class MarriagePlannerScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Marriage Header Banner (Ivory & Emerald Theme Card)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
@@ -122,7 +120,6 @@ class MarriagePlannerScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 32),
 
-            // Planning options
             Text(
               'PLANNING CENTER',
               style: AppTextStyles.caption.copyWith(
@@ -154,7 +151,6 @@ class MarriagePlannerScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
 
-            // AI Insight Optimizer suggestion
             AiInsightCard(
               title: 'Optimize My Marriage Plan',
               description:
@@ -202,7 +198,6 @@ class MarriagePlannerScreen extends ConsumerWidget {
   }
 }
 
-// --- 16. MARRIAGE BUDGET ---
 class MarriageBudgetScreen extends ConsumerWidget {
   const MarriageBudgetScreen({super.key});
 
@@ -214,7 +209,6 @@ class MarriageBudgetScreen extends ConsumerWidget {
 
     if (plan == null) return const Scaffold(body: LoadingState());
 
-    // Calculations
     double totalSpent = plan.budgetItems.fold(
       0,
       (sum, item) => sum + item.actualSpent,
@@ -229,7 +223,6 @@ class MarriageBudgetScreen extends ConsumerWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Spend Summary Banner (Typography first)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             child: Row(
@@ -430,7 +423,6 @@ class MarriageBudgetScreen extends ConsumerWidget {
   }
 }
 
-// --- 17. MARRIAGE TIMELINE ---
 class MarriageTimelineScreen extends ConsumerWidget {
   const MarriageTimelineScreen({super.key});
 
@@ -465,7 +457,7 @@ class MarriageTimelineScreen extends ConsumerWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: t.isCompleted
-                            ? AppColors.accent // Champagne Gold
+                            ? AppColors.accent
                             : Colors.transparent,
                         border: Border.all(
                           color: AppColors.accent,
@@ -544,7 +536,6 @@ class MarriageTimelineScreen extends ConsumerWidget {
   }
 }
 
-// --- 18. WHAT-IF SIMULATOR ---
 class WhatIfSimulatorScreen extends ConsumerStatefulWidget {
   const WhatIfSimulatorScreen({super.key});
 
@@ -555,7 +546,7 @@ class WhatIfSimulatorScreen extends ConsumerStatefulWidget {
 
 class _WhatIfSimulatorScreenState extends ConsumerState<WhatIfSimulatorScreen> {
   double _budget =
-      1000000; // Sliders between 10L and 15L as requested by prompt
+      1000000;
 
   @override
   void initState() {
@@ -600,7 +591,6 @@ class _WhatIfSimulatorScreenState extends ConsumerState<WhatIfSimulatorScreen> {
             ),
             const Spacer(),
 
-            // Slider value
             Center(
               child: Column(
                 children: [
@@ -650,7 +640,6 @@ class _WhatIfSimulatorScreenState extends ConsumerState<WhatIfSimulatorScreen> {
             const Divider(),
             const SizedBox(height: 24),
 
-            // Outputs
             _impactMetricRow('Additional Requirement', diff, isAddition: true),
             _impactMetricRow(
               'Monthly Target Impact',
@@ -659,7 +648,6 @@ class _WhatIfSimulatorScreenState extends ConsumerState<WhatIfSimulatorScreen> {
             ),
             const SizedBox(height: 24),
 
-            // AI advice box
             AiInsightCard(
               title: 'GoalPilot AI co-pilot feedback',
               description: diff == 0

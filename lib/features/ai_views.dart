@@ -10,7 +10,6 @@ import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
 import 'package:migoalpilot_app/core/models/models.dart';
 import 'package:migoalpilot_app/shared/enums/enums.dart';
 
-// --- 25. AI ASSISTANT CHAT SCREEN ---
 class AiAssistantScreen extends ConsumerStatefulWidget {
   const AiAssistantScreen({super.key});
 
@@ -63,7 +62,6 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
       body: Column(
         children: [
 
-          // Message log / suggestions
           Expanded(
             child: state.messages.isEmpty
                 ? _buildQuickSuggestions()
@@ -105,7 +103,6 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
               ),
             ),
 
-          // Bottom Input bar
           Container(
             padding: EdgeInsets.only(
               left: 16,
@@ -210,7 +207,6 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
         ),
       );
     } else {
-      // AI Message with custom parsed structured block layouts (INSIGHT, PLAN, OPTIONS, ACTION)
       return Align(
         alignment: Alignment.centerLeft,
         child: Container(
@@ -224,8 +220,6 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
   Widget _buildStructuredMessageBlocks(String text, BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
 
-    // We will parse response into custom structured boxes
-    // E.g. Check for keywords in the message
     bool hasInsight =
         text.contains('uses') ||
         text.contains('paces') ||
@@ -273,7 +267,6 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Main text block
               Text(text, style: AppTextStyles.bodyLarge.copyWith(fontSize: 14)),
               if (hasInsight) ...[
                 const SizedBox(height: 16),
@@ -348,7 +341,6 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
   }
 }
 
-// --- 9. AI GOAL CREATION SCREEN (Draft intent parsing) ---
 class AiGoalCreationScreen extends ConsumerStatefulWidget {
   const AiGoalCreationScreen({super.key});
 

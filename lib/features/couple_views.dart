@@ -7,7 +7,6 @@ import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
 import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
 import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
 
-// --- 26. COUPLE MODE SCREEN ---
 class CoupleModeScreen extends ConsumerWidget {
   const CoupleModeScreen({super.key});
 
@@ -16,7 +15,6 @@ class CoupleModeScreen extends ConsumerWidget {
     final goalsState = ref.watch(goalsViewModelProvider);
     final isLight = Theme.of(context).brightness == Brightness.light;
 
-    // Filter shared goals
     final sharedGoals = goalsState.goals.where((g) => g.isShared).toList();
 
     return Scaffold(
@@ -35,7 +33,6 @@ class CoupleModeScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Couple Status Header (Sleek and typography first)
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -97,7 +94,6 @@ class CoupleModeScreen extends ConsumerWidget {
               )
             else
               ...sharedGoals.map((g) {
-                // Dual contribution calculations (You: ₹2.5L, Partner: ₹2L)
                 const youSavings = 250000.0;
                 const partnerSavings = 200000.0;
                 const totalSaved = youSavings + partnerSavings;
@@ -128,7 +124,6 @@ class CoupleModeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      // Metrics breakdown
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -162,7 +157,6 @@ class CoupleModeScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      // Dual Segment progress indicator
                       _DualSegmentProgress(
                         youPct: youPct,
                         partnerPct: partnerPct,
@@ -204,7 +198,6 @@ class CoupleModeScreen extends ConsumerWidget {
   }
 }
 
-// --- Custom Dual Segment Progress Bar ---
 class _DualSegmentProgress extends StatelessWidget {
   final double youPct;
   final double partnerPct;
@@ -231,9 +224,7 @@ class _DualSegmentProgress extends StatelessWidget {
             color: isLight ? AppColors.border : AppColors.borderDark,
             child: Row(
               children: [
-                // You Segment
                 Container(width: youWidth, color: AppColors.primary),
-                // Partner Segment
                 Container(width: partnerWidth, color: AppColors.secondary),
               ],
             ),
@@ -244,7 +235,6 @@ class _DualSegmentProgress extends StatelessWidget {
   }
 }
 
-// --- 27. INVITE PARTNER SCREEN ---
 class InvitePartnerScreen extends StatefulWidget {
   const InvitePartnerScreen({super.key});
 

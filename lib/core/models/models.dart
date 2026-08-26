@@ -53,8 +53,8 @@ class Goal {
   final DateTime targetDate;
   final GoalPriority priority;
   final GoalHealth health;
-  final double targetGrams; // Specific to Gold goals
-  final double purchasedGrams; // Specific to Gold goals
+  final double targetGrams;
+  final double purchasedGrams;
   final bool isShared;
 
   Goal({
@@ -145,7 +145,7 @@ class SavingsTransaction {
   final double amount;
   final DateTime date;
   final String? note;
-  final double? goldGrams; // For gold contributions
+  final double? goldGrams;
 
   SavingsTransaction({
     required this.id,
@@ -366,7 +366,7 @@ class Couple {
   final String user1Id;
   final String user2Id;
   final String partnerName;
-  final Map<String, double> contributions; // goalId -> user contribution
+  final Map<String, double> contributions;
 
   Couple({
     required this.id,

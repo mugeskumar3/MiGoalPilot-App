@@ -9,7 +9,6 @@ import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
 import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
 import 'package:migoalpilot_app/core/models/models.dart';
 
-// --- 23. ACTIVITY ---
 class ActivityScreen extends ConsumerStatefulWidget {
   const ActivityScreen({super.key});
 
@@ -77,7 +76,6 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Monthly Progress Header (Spacious, typography-focused)
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -130,7 +128,6 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
           ),
           const Divider(height: 1),
 
-          // Filters Row
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -229,7 +226,6 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
   }
 }
 
-// --- 24. NOTIFICATIONS ---
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
 
@@ -334,7 +330,6 @@ class NotificationsScreen extends ConsumerWidget {
   }
 }
 
-// --- 28. PROFILE SCREEN ---
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
@@ -356,7 +351,6 @@ class ProfileScreen extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
         child: Column(
           children: [
-            // User Header
             Center(
               child: Column(
                 children: [
@@ -401,7 +395,6 @@ class ProfileScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 36),
 
-            // Settings row lists (Fine border lists instead of heavy card columns)
             _profileGroup(context, 'Account Settings', [
               _profileTile(
                 context,
@@ -452,7 +445,6 @@ class ProfileScreen extends ConsumerWidget {
             ]),
             const SizedBox(height: 36),
 
-            // Logout
             SecondaryButton(
               text: 'Sign Out',
               onPressed: () {
@@ -509,7 +501,6 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-// --- 29. SECURITY SCREEN ---
 class SecurityScreen extends ConsumerWidget {
   const SecurityScreen({super.key});
 
@@ -564,7 +555,6 @@ class SecurityScreen extends ConsumerWidget {
   }
 }
 
-// --- 30. NOTIFICATION SETTINGS ---
 class NotificationSettingsScreen extends StatefulWidget {
   const NotificationSettingsScreen({super.key});
 
@@ -638,7 +628,6 @@ class _NotificationSettingsScreenState
   }
 }
 
-// --- 31. THEME SETTINGS ---
 class ThemeSettingsScreen extends ConsumerWidget {
   const ThemeSettingsScreen({super.key});
 
@@ -702,7 +691,6 @@ class ThemeSettingsScreen extends ConsumerWidget {
   }
 }
 
-// --- 32. PRIVACY SCREEN ---
 class PrivacyScreen extends StatelessWidget {
   const PrivacyScreen({super.key});
 

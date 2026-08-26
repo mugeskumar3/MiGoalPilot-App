@@ -78,7 +78,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 1. Dark Top Banner with Bezier S-Curve Wave & Golden Edge
             Stack(
               clipBehavior: Clip.none,
               children: [
@@ -96,7 +95,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     child: Stack(
                       children: [
-                        // Decorative Network Nodes Graphic
                         Positioned(
                           right: -25,
                           top: -15,
@@ -112,7 +110,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Top Header Navigation Bar
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -191,7 +188,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
                 ),
-                // Center Floating Double-Ringed Emblem Badge
                 Positioned(
                   bottom: -28,
                   left: 0,
@@ -223,14 +219,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
             const SizedBox(height: 48),
 
-            // 2. Central Form Body
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    // Section Flanked Title
                     Row(
                       children: [
                         Expanded(child: Container(height: 1, color: AppColors.accent.withValues(alpha: 0.4))),
@@ -274,7 +268,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const SizedBox(height: 16),
                     ],
 
-                    // Pill Form Inputs
                     AppTextField(
                       label: 'Email address',
                       controller: _emailController,
@@ -310,7 +303,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // Security Line
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -327,7 +319,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Golden Pill Primary Action Button
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -374,7 +365,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                     const SizedBox(height: 14),
 
-                    // Biometrics Option Pill
                     OutlinedButton.icon(
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -406,7 +396,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                     const SizedBox(height: 24),
 
-                    // Register Switcher Text
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -433,7 +422,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Soft Terms & Privacy Pill Box
                     GestureDetector(
                       onTap: () {
                         showDialog(
@@ -481,7 +469,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               ),
             ),
 
-            // 3. Dark Bottom Wave Banner with Gold Trim
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 20),

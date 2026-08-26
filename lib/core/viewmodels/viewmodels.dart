@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:migoalpilot_app/core/models/models.dart';
 import 'package:migoalpilot_app/core/repositories/repositories.dart';
 
-// --- PROVIDERS DECLARATIONS ---
 final authRepositoryProvider = Provider<AuthRepository>((ref) => MockAuthRepository());
 final goalRepositoryProvider = Provider<GoalRepository>((ref) => MockGoalRepository());
 final marriageRepositoryProvider = Provider<MarriageRepository>((ref) => MockMarriageRepository());
@@ -11,9 +10,7 @@ final goldRepositoryProvider = Provider<GoldRepository>((ref) => MockGoldReposit
 final aiRepositoryProvider = Provider<AiRepository>((ref) => MockAiRepository());
 final notificationRepositoryProvider = Provider<NotificationRepository>((ref) => MockNotificationRepository());
 
-// --- VIEWMODEL STATES & NOTIFIERS ---
 
-// Auth State
 class AuthState {
   final User? user;
   final bool isLoading;
@@ -80,7 +77,6 @@ final authViewModelProvider = StateNotifierProvider<AuthViewModel, AuthState>((r
   return AuthViewModel(ref.watch(authRepositoryProvider));
 });
 
-// Goals State
 class GoalsState {
   final List<Goal> goals;
   final bool isLoading;
@@ -134,7 +130,6 @@ final goalsViewModelProvider = StateNotifierProvider<GoalsViewModel, GoalsState>
   return GoalsViewModel(ref.watch(goalRepositoryProvider));
 });
 
-// Goal Detail State
 class GoalDetailState {
   final Goal? goal;
   final List<SavingsTransaction> transactions;
@@ -187,7 +182,6 @@ final goalDetailViewModelProvider = StateNotifierProvider.family<GoalDetailViewM
   return GoalDetailViewModel(ref.watch(goalRepositoryProvider), id);
 });
 
-// Marriage Planner State
 class MarriageState {
   final MarriagePlan? plan;
   final bool isLoading;
@@ -262,7 +256,6 @@ class MarriageViewModel extends StateNotifier<MarriageState> {
     try {
       final currentBudget = state.plan?.totalBudget ?? 1050000;
       final res = await _aiRepo.simulateWhatIf(guests, currentBudget);
-      // parse result: {"difference": d, "newBudget": nb, "monthlyAdd": ma}
       final diff = double.parse(RegExp(r'"difference":\s*([0-9\.-]+)').firstMatch(res)?.group(1) ?? '0');
       final newB = double.parse(RegExp(r'"newBudget":\s*([0-9\.-]+)').firstMatch(res)?.group(1) ?? '0');
       final monA = double.parse(RegExp(r'"monthlyAdd":\s*([0-9\.-]+)').firstMatch(res)?.group(1) ?? '0');
@@ -286,7 +279,6 @@ final marriageViewModelProvider = StateNotifierProvider<MarriageViewModel, Marri
   );
 });
 
-// Gold Module State
 class GoldState {
   final GoldPrice? livePrice;
   final List<double> history;
@@ -355,7 +347,6 @@ final goldViewModelProvider = StateNotifierProvider<GoldViewModel, GoldState>((r
   return GoldViewModel(ref.watch(goldRepositoryProvider));
 });
 
-// AI Conversation Chat State
 class ChatMessage {
   final String text;
   final bool isUser;
@@ -434,7 +425,6 @@ final aiViewModelProvider = StateNotifierProvider<AiViewModel, AiState>((ref) {
   return AiViewModel(ref.watch(aiRepositoryProvider));
 });
 
-// Notifications ViewModel State
 class NotificationState {
   final List<NotificationItem> items;
   final bool isLoading;
@@ -479,7 +469,6 @@ final notificationViewModelProvider = StateNotifierProvider<NotificationViewMode
   return NotificationViewModel(ref.watch(notificationRepositoryProvider));
 });
 
-// Theme/Preferences Model & Provider
 class ProfileState {
   final ThemeMode themeMode;
   final String currency;
