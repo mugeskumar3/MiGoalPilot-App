@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import '../app/theme/app_colors.dart';
-import '../app/theme/app_spacing.dart';
-import '../app/theme/app_text_styles.dart';
-import '../core/widgets/shared_widgets.dart';
-import '../core/viewmodels/viewmodels.dart';
-import '../core/models/models.dart';
-import '../shared/enums/enums.dart';
+import 'package:migoalpilot_app/app/theme/app_colors.dart';
+import 'package:migoalpilot_app/app/theme/app_spacing.dart';
+import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
+import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
+import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
+import 'package:migoalpilot_app/core/models/models.dart';
+import 'package:migoalpilot_app/shared/enums/enums.dart';
 
 // --- 10. HOME DASHBOARD ---
 class HomeDashboardScreen extends ConsumerWidget {

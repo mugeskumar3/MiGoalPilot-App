@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'main_navigation_shell.dart';
-import '../../features/auth_views.dart';
-import '../../features/dashboard_views.dart';
-import '../../features/marriage_views.dart';
-import '../../features/gold_views.dart';
-import '../../features/ai_views.dart';
-import '../../features/couple_views.dart';
-import '../../features/profile_views.dart';
-import '../../features/multi_goal_views.dart';
+import 'package:migoalpilot_app/app/router/main_navigation_shell.dart';
+import 'package:migoalpilot_app/features/auth_views.dart';
+import 'package:migoalpilot_app/features/dashboard_views.dart';
+import 'package:migoalpilot_app/features/marriage_views.dart';
+import 'package:migoalpilot_app/features/gold_views.dart';
+import 'package:migoalpilot_app/features/ai_views.dart';
+import 'package:migoalpilot_app/features/couple_views.dart';
+import 'package:migoalpilot_app/features/profile_views.dart';
+import 'package:migoalpilot_app/features/multi_goal_views.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',

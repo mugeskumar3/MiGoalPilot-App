@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_colors.dart';
+import 'package:migoalpilot_app/app/theme/app_colors.dart';
 
 class MainNavigationShell extends StatelessWidget {
   final Widget child;

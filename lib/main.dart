@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'app/router/app_router.dart';
-import 'app/theme/app_theme.dart';
-import 'core/viewmodels/viewmodels.dart';
+import 'package:migoalpilot_app/app/router/app_router.dart';
+import 'package:migoalpilot_app/app/theme/app_theme.dart';
+import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-import '../models/models.dart';
-import '../../shared/enums/enums.dart';
+import 'package:migoalpilot_app/core/models/models.dart';
+import 'package:migoalpilot_app/shared/enums/enums.dart';
 
 // --- AUTHENTICATION ---
 abstract class AuthRepository {
