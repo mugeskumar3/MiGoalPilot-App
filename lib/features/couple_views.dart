@@ -18,55 +18,58 @@ class CoupleModeScreen extends ConsumerWidget {
     final sharedGoals = goalsState.goals.where((g) => g.isShared).toList();
 
     return Scaffold(
+      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
       appBar: MiBackAppBar(
         title: 'Couple Shared Mode',
         onBackPressed: () => context.pop(),
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_add_alt_1_outlined),
+            icon: Icon(Icons.person_add_alt_1_outlined, color: isLight ? AppColors.primary : AppColors.accentDark),
             onPressed: () => context.push('/invite-partner'),
           ),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: isLight
-                    ? AppColors.secondary.withValues(alpha: 0.04)
-                    : AppColors.surfaceDark,
-                borderRadius: BorderRadius.circular(12),
+                color: isLight ? Colors.white : AppColors.surfaceDark,
+                borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: isLight
-                      ? AppColors.secondary.withValues(alpha: 0.15)
-                      : AppColors.borderDark,
+                  color: isLight ? AppColors.border : AppColors.borderDark,
+                  width: 1.2,
                 ),
               ),
               child: Row(
                 children: [
-                  const Text('👩‍❤️‍👨', style: TextStyle(fontSize: 36)),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.secondary.withValues(alpha: 0.08),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Text('👩‍❤️‍👨', style: TextStyle(fontSize: 28)),
+                  ),
                   AppSpacing.widthM,
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Linked Partner: PRIYA',
-                          style: AppTextStyles.titleMedium.copyWith(
+                          'Linked Partner: Priya',
+                          style: AppTextStyles.titleLarge.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        AppSpacing.heightXXS,
+                        const SizedBox(height: 4),
                         Text(
                           'Collaborating on ${sharedGoals.length} shared goal targets.',
-                          style: AppTextStyles.caption.copyWith(
-                            color: isLight
-                                ? AppColors.textSecondary
-                                : AppColors.textSecondaryDark,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
                           ),
                         ),
                       ],
@@ -77,20 +80,13 @@ class CoupleModeScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 32),
 
-            Text(
-              'SHARED SAVINGS PATHS',
-              style: AppTextStyles.caption.copyWith(
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0.5,
-              ),
-            ),
-            AppSpacing.heightS,
+            const MiSectionHeader(title: "Shared Savings Paths"),
+            const SizedBox(height: 8),
 
             if (sharedGoals.isEmpty)
               const EmptyState(
-                title: 'No shared goals active',
-                description:
-                    'Invite your partner to connect and co-pilot plans together.',
+                title: 'No Shared Goals Active',
+                description: 'Invite your partner to connect and co-pilot plans together.',
               )
             else
               ...sharedGoals.map((g) {
@@ -104,12 +100,13 @@ class CoupleModeScreen extends ConsumerWidget {
 
                 return Container(
                   margin: const EdgeInsets.only(bottom: 20),
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: isLight ? Colors.white : AppColors.surfaceDark,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isLight ? AppColors.border : AppColors.borderDark,
+                      width: 1.2,
                     ),
                   ),
                   child: Column(
@@ -118,13 +115,13 @@ class CoupleModeScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(g.name, style: AppTextStyles.titleLarge),
+                          Text(g.name, style: AppTextStyles.titleLarge.copyWith(fontWeight: FontWeight.bold)),
                           GoalHealthBadge(health: g.health),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
 
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
@@ -132,11 +129,12 @@ class CoupleModeScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 'YOUR DEPOSIT',
-                                style: AppTextStyles.caption,
+                                style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold, color: isLight ? AppColors.textSecondary : AppColors.textLightDark),
                               ),
+                              const SizedBox(height: 4),
                               MoneyDisplay(
                                 amount: youSavings,
-                                style: AppTextStyles.titleMedium,
+                                style: AppTextStyles.titleLarge.copyWith(fontWeight: FontWeight.w800),
                               ),
                             ],
                           ),
@@ -145,39 +143,44 @@ class CoupleModeScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 'PARTNER DEPOSIT',
-                                style: AppTextStyles.caption,
+                                style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold, color: isLight ? AppColors.textSecondary : AppColors.textLightDark),
                               ),
+                              const SizedBox(height: 4),
                               MoneyDisplay(
                                 amount: partnerSavings,
-                                style: AppTextStyles.titleMedium,
+                                style: AppTextStyles.titleLarge.copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: isLight ? AppColors.primary : AppColors.accentDark,
+                                ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 20),
 
                       _DualSegmentProgress(
                         youPct: youPct,
                         partnerPct: partnerPct,
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
 
                       Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
-                              'Combined: ',
-                              style: AppTextStyles.caption,
+                            Text(
+                              'Combined Progress: ',
+                              style: AppTextStyles.caption.copyWith(color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark),
                             ),
                             MoneyDisplay(
                               amount: totalSaved,
                               style: AppTextStyles.caption.copyWith(
                                 fontWeight: FontWeight.bold,
+                                color: isLight ? AppColors.primary : AppColors.accentDark,
                               ),
                             ),
-                            const Text(' of ', style: AppTextStyles.caption),
+                            Text(' of ', style: AppTextStyles.caption.copyWith(color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark)),
                             MoneyDisplay(
                               amount: totalTarget,
                               style: AppTextStyles.caption.copyWith(
@@ -224,7 +227,7 @@ class _DualSegmentProgress extends StatelessWidget {
             color: isLight ? AppColors.border : AppColors.borderDark,
             child: Row(
               children: [
-                Container(width: youWidth, color: AppColors.primary),
+                Container(width: youWidth, color: isLight ? AppColors.primary : AppColors.accentDark),
                 Container(width: partnerWidth, color: AppColors.secondary),
               ],
             ),
@@ -255,48 +258,65 @@ class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
+      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
       appBar: MiBackAppBar(
         title: 'Invite Partner',
         onBackPressed: () => context.pop(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(child: Text('✉️', style: TextStyle(fontSize: 56))),
-            AppSpacing.heightM,
-            const Text('Connect Accounts', style: AppTextStyles.displayMedium),
-            AppSpacing.heightS,
-            Text(
-              'Input your partner\'s email below. A request link will link your dashboard and budget segments.',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: isLight
-                    ? AppColors.textSecondary
-                    : AppColors.textSecondaryDark,
-              ),
-            ),
-            const SizedBox(height: 32),
-            AppTextField(
-              label: 'Partner email address',
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 24),
-            PrimaryButton(
-              text: 'SEND CONNECTION INVITE',
-              onPressed: () {
-                if (_emailController.text.contains('@')) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Invitation sent successfully!'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: isLight ? Colors.white : AppColors.surfaceDark,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: isLight ? AppColors.border : AppColors.borderDark,
+                      width: 1.2,
                     ),
-                  );
-                  context.pop();
-                }
-              },
-            ),
-          ],
+                  ),
+                  child: const Text('✉️', style: TextStyle(fontSize: 48)),
+                ),
+              ),
+              const SizedBox(height: 32),
+              Text(
+                'Connect Accounts', 
+                style: AppTextStyles.displayMedium.copyWith(fontWeight: FontWeight.w800),
+              ),
+              AppSpacing.heightS,
+              Text(
+                'Input your partner\'s email below. A request link will link your dashboard and budget segments.',
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                ),
+              ),
+              const SizedBox(height: 40),
+              AppTextField(
+                label: 'Partner email address',
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 32),
+              PrimaryButton(
+                text: 'SEND CONNECTION INVITE',
+                onPressed: () {
+                  if (_emailController.text.contains('@')) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Invitation sent successfully!'),
+                      ),
+                    );
+                    context.pop();
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

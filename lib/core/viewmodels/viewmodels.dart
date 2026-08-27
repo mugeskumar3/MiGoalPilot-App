@@ -71,6 +71,18 @@ class AuthViewModel extends StateNotifier<AuthState> {
   Future<void> forgotPassword(String email) async {
     await _repo.forgotPassword(email);
   }
+
+  Future<bool> updateProfile({required String name, required String email, String? phone, String? country}) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      final u = await _repo.updateProfile(name: name, email: email, phone: phone, country: country);
+      state = AuthState(user: u);
+      return true;
+    } catch (e) {
+      state = state.copyWith(isLoading: false, error: e.toString());
+      return false;
+    }
+  }
 }
 
 final authViewModelProvider = StateNotifierProvider<AuthViewModel, AuthState>((ref) {

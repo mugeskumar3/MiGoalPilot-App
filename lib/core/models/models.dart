@@ -5,12 +5,16 @@ class User {
   final String name;
   final String email;
   final String? partnerId;
+  final String? phone;
+  final String? country;
 
   User({
     required this.id,
     required this.name,
     required this.email,
     this.partnerId,
+    this.phone,
+    this.country,
   });
 
   User copyWith({
@@ -18,12 +22,16 @@ class User {
     String? name,
     String? email,
     String? partnerId,
+    String? phone,
+    String? country,
   }) {
     return User(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
       partnerId: partnerId ?? this.partnerId,
+      phone: phone ?? this.phone,
+      country: country ?? this.country,
     );
   }
 
@@ -33,6 +41,8 @@ class User {
       name: json['name'] as String,
       email: json['email'] as String,
       partnerId: json['partnerId'] as String?,
+      phone: json['phone'] as String?,
+      country: json['country'] as String?,
     );
   }
 
@@ -41,6 +51,8 @@ class User {
         'name': name,
         'email': email,
         'partnerId': partnerId,
+        'phone': phone,
+        'country': country,
       };
 }
 

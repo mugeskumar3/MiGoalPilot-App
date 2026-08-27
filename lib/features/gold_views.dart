@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 import 'package:migoalpilot_app/app/theme/app_colors.dart';
-import 'package:migoalpilot_app/app/theme/app_spacing.dart';
 import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
 import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
 import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
@@ -25,11 +24,16 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return const _GoldAlertBottomSheetContent();
+        final isLight = Theme.of(context).brightness == Brightness.light;
+        return Container(
+          decoration: BoxDecoration(
+            color: isLight ? Colors.white : AppColors.surfaceDark,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: const _GoldAlertBottomSheetContent(),
+        );
       },
     );
   }
@@ -45,14 +49,17 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
         .toList();
 
     return Scaffold(
+      backgroundColor: isLight
+          ? AppColors.background
+          : AppColors.backgroundDark,
       appBar: MiAppBar(
-        title: '🥇 Gold',
-        subtitle: 'Track your price and progress',
+        title: 'Gold Marketplace',
+        subtitle: 'Live price tracker & linked targets',
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.notifications_active_outlined,
-              color: AppColors.accent,
+              color: isLight ? AppColors.primary : AppColors.accentDark,
               size: 22,
             ),
             onPressed: () => _showAlertBottomSheet(context),
@@ -65,7 +72,7 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -76,82 +83,61 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                   children: [
                     Expanded(
                       child: GoldPriceWidget(
-                        price: state.livePrice!.rate22K,
-                        change: state.livePrice!.dailyChangePercentage,
+                        price: state.livePrice?.rate22K ?? 0.0,
+                        change: state.livePrice?.dailyChangePercentage ?? 0.0,
                         karat: '22K',
                       ),
                     ),
-                    AppSpacing.widthM,
+                    const SizedBox(width: 12),
                     Expanded(
                       child: GoldPriceWidget(
-                        price: state.livePrice!.rate24K,
-                        change: state.livePrice!.dailyChangePercentage,
+                        price: state.livePrice?.rate24K ?? 0.0,
+                        change: state.livePrice?.dailyChangePercentage ?? 0.0,
                         karat: '24K',
                       ),
                     ),
                   ],
                 ),
-                AppSpacing.heightS,
+                const SizedBox(height: 8),
                 Align(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    'Updated ${DateFormat('hh:mm a').format(state.livePrice!.lastUpdated)}',
+                    'Rates closing closure: ${DateFormat('hh:mm a').format(state.livePrice!.lastUpdated)}',
                     style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textLight,
+                      color: isLight
+                          ? AppColors.textSecondary
+                          : AppColors.textLightDark,
                     ),
                   ),
                 ),
                 const SizedBox(height: 24),
 
-                if (state.livePrice!.dailyChangePercentage < -1.0) ...[
+                if ((state.livePrice?.dailyChangePercentage ?? 0.0) < -1.0) ...[
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: AppColors.success.withValues(alpha: 0.08),
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                       border: Border.all(
                         color: AppColors.success.withValues(alpha: 0.15),
                       ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Text('🥇', style: TextStyle(fontSize: 16)),
-                            AppSpacing.widthS,
-                            Text(
-                              'BUYING OPPORTUNITY',
-                              style: AppTextStyles.caption.copyWith(
-                                color: AppColors.success,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                        AppSpacing.heightS,
-                        Text(
-                          'Gold is down ${state.livePrice!.dailyChangePercentage.abs()}% today. Gram requirements are currently ₹3,000 cheaper than yesterday.',
-                          style: AppTextStyles.bodyMedium,
-                        ),
-                      ],
+                    child: Text(
+                      'Gold is down ${state.livePrice!.dailyChangePercentage.abs()}% today. Ideal time to purchase grams for active linked targets.',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.success,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
                 ],
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'PRICE HISTORY',
-                      style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
+                    const MiSectionHeader(title: "Price History"),
                     Row(
                       children: ['7D', '30D', '3M', '1Y'].map((val) {
                         final active = _range == val;
@@ -165,14 +151,14 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                           child: Container(
                             margin: const EdgeInsets.only(left: 8),
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
+                              horizontal: 12,
+                              vertical: 6,
                             ),
                             decoration: BoxDecoration(
                               color: active
                                   ? (isLight
                                         ? AppColors.primary
-                                        : AppColors.primaryDark)
+                                        : AppColors.accentDark)
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -180,13 +166,13 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                               val,
                               style: AppTextStyles.caption.copyWith(
                                 color: active
-                                    ? Colors.white
+                                    ? (isLight
+                                          ? Colors.white
+                                          : AppColors.backgroundDark)
                                     : (isLight
                                           ? AppColors.textSecondary
                                           : AppColors.textSecondaryDark),
-                                fontWeight: active
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -195,20 +181,26 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                     ),
                   ],
                 ),
-                AppSpacing.heightM,
+                const SizedBox(height: 12),
 
                 Container(
                   height: 180,
-                  padding: const EdgeInsets.only(top: 12, right: 16, bottom: 4),
+                  padding: const EdgeInsets.only(
+                    top: 20,
+                    right: 20,
+                    bottom: 8,
+                    left: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: isLight ? Colors.white : AppColors.surfaceDark,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: isLight ? AppColors.border : AppColors.borderDark,
+                      width: 1.2,
                     ),
                   ),
                   child: state.history.isEmpty
-                      ? const Center(child: Text('Loading chart history...'))
+                      ? const Center(child: Text('Loading price indices...'))
                       : LineChart(
                           LineChartData(
                             gridData: const FlGridData(show: false),
@@ -225,59 +217,68 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                                   );
                                 }),
                                 isCurved: true,
-                                color:
-                                    AppColors.secondary,
+                                color: isLight
+                                    ? AppColors.primary
+                                    : AppColors.accentDark,
                                 barWidth: 2.5,
                                 dotData: FlDotData(
                                   show: true,
-                                  getDotPainter: (spot, percent, barData, index) {
-                                    final isLast =
-                                        index == barData.spots.length - 1;
-                                    return FlDotCirclePainter(
-                                      radius: isLast ? 4 : 0,
-                                      color: AppColors
-                                          .accent,
-                                      strokeColor: AppColors.accent,
-                                      strokeWidth: 1,
-                                    );
-                                  },
+                                  getDotPainter:
+                                      (spot, percent, barData, index) {
+                                        final isLast =
+                                            index == barData.spots.length - 1;
+                                        return FlDotCirclePainter(
+                                          radius: isLast ? 5 : 0,
+                                          color: AppColors.accent,
+                                          strokeColor: AppColors.accent,
+                                          strokeWidth: 1,
+                                        );
+                                      },
                                 ),
                                 belowBarData: BarAreaData(
                                   show: true,
-                                  color: AppColors.secondary.withValues(
-                                    alpha: 0.04,
-                                  ),
+                                  color:
+                                      (isLight
+                                              ? AppColors.primary
+                                              : AppColors.accentDark)
+                                          .withValues(alpha: 0.05),
                                 ),
                               ),
                             ],
                           ),
                         ),
                 ),
-                const SizedBox(height: 28),
+                const SizedBox(height: 32),
 
-                Text(
-                  'STATISTICS',
-                  style: AppTextStyles.caption.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+                const MiSectionHeader(title: "Statistics"),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isLight ? Colors.white : AppColors.surfaceDark,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isLight ? AppColors.border : AppColors.borderDark,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      _statIndexRow('7 Day High', 12850, context),
+                      _statIndexRow('7 Day Low', 12380, context),
+                      _statIndexRow('30 Day Average', 12610, context),
+                    ],
                   ),
                 ),
-                AppSpacing.heightS,
-                _statIndexRow('7 Day High', 12850),
-                _statIndexRow('7 Day Low', 12380),
-                _statIndexRow('30 Day Average', 12610),
-                const SizedBox(height: 28),
+                const SizedBox(height: 32),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'LINKED GOLD GOALS',
-                      style: AppTextStyles.caption.copyWith(
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
+                    const MiSectionHeader(title: "Linked Gold Goals"),
                     TextButton(
                       onPressed: () => context.push('/goals'),
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
@@ -285,46 +286,81 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
                         'Manage',
                         style: TextStyle(
                           color: isLight
-                              ? AppColors.secondary
-                              : AppColors.primaryDark,
+                              ? AppColors.primary
+                              : AppColors.accentDark,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ],
                 ),
-                AppSpacing.heightS,
+                const SizedBox(height: 8),
 
                 if (goldGoals.isEmpty)
                   const EmptyState(
-                    title: 'No gold goals active',
+                    title: 'No Linked Gold Goals',
                     description:
-                        'Link a gold goal plan to start tracking gram purchases.',
+                        'Link a gold target to purchase grams periodically.',
                   )
                 else
                   ...goldGoals.map((g) {
                     return Container(
                       margin: const EdgeInsets.only(bottom: 12),
-                      decoration: BoxDecoration(
-                        color: isLight ? Colors.white : AppColors.surfaceDark,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: isLight
-                              ? AppColors.border
-                              : AppColors.borderDark,
+                      child: Material(
+                        color: isLight ? AppColors.surface : AppColors.surfaceDark,
+                        borderRadius: BorderRadius.circular(20),
+                        clipBehavior: Clip.antiAlias,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isLight
+                                  ? AppColors.border
+                                  : AppColors.borderDark,
+                              width: 1.2,
+                            ),
+                          ),
+                          child: ListTile(
+                            onTap: () => context.push('/gold-goals/${g.id}'),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 8,
+                            ),
+                            leading: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: isLight
+                                    ? AppColors.background
+                                    : AppColors.backgroundDark,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Text(
+                                '🥇',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            title: Text(
+                              g.name,
+                              style: AppTextStyles.titleLarge.copyWith(
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                              '${g.purchasedGrams}g accumulated of ${g.targetGrams}g target',
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: isLight
+                                    ? AppColors.textSecondary
+                                    : AppColors.textSecondaryDark,
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 14,
+                              color: isLight
+                                  ? AppColors.primary
+                                  : AppColors.accentDark,
+                            ),
+                          ),
                         ),
-                      ),
-                      child: ListTile(
-                        onTap: () => context.push('/gold-goals/${g.id}'),
-                        leading: const Text(
-                          '🥇',
-                          style: TextStyle(fontSize: 24),
-                        ),
-                        title: Text(g.name, style: AppTextStyles.titleMedium),
-                        subtitle: Text(
-                          '${g.purchasedGrams}g accumulated of ${g.targetGrams}g target',
-                        ),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 12),
                       ),
                     );
                   }),
@@ -336,30 +372,31 @@ class _GoldDashboardScreenState extends ConsumerState<GoldDashboardScreen> {
     );
   }
 
-  Widget _statIndexRow(String label, double val) {
+  Widget _statIndexRow(String label, double val, BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              MoneyDisplay(
-                amount: val,
-                style: AppTextStyles.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          Text(
+            label,
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: isLight
+                  ? AppColors.textSecondary
+                  : AppColors.textSecondaryDark,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: 6),
-          const Divider(height: 1),
+          MoneyDisplay(
+            amount: val,
+            style: AppTextStyles.titleLarge.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isLight
+                  ? AppColors.textPrimary
+                  : AppColors.textPrimaryDark,
+            ),
+          ),
         ],
       ),
     );
@@ -392,87 +429,135 @@ class GoldGoalDetailScreen extends ConsumerWidget {
     final estimatedValueRemaining = remainingGrams * spotPrice;
 
     return Scaffold(
+      backgroundColor: isLight
+          ? AppColors.background
+          : AppColors.backgroundDark,
       appBar: MiBackAppBar(title: g.name, onBackPressed: () => context.pop()),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  const Text('🥇', style: TextStyle(fontSize: 56)),
-                  AppSpacing.heightS,
-                  Text(
-                    '${g.purchasedGrams}g Purchased',
-                    style: AppTextStyles.displayMedium,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'of ${g.targetGrams}g target (${(g.progressPercentage * 100).toStringAsFixed(1)}%)',
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: isLight
-                          ? AppColors.textSecondary
-                          : AppColors.textSecondaryDark,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: isLight ? Colors.white : AppColors.surfaceDark,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isLight
+                              ? AppColors.border
+                              : AppColors.borderDark,
+                          width: 1.2,
+                        ),
+                      ),
+                      child: const Text('🥇', style: TextStyle(fontSize: 48)),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    Text(
+                      '${g.purchasedGrams}g Purchased',
+                      style: AppTextStyles.displayMedium.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'of ${g.targetGrams}g target (${(g.progressPercentage * 100).toStringAsFixed(1)}%)',
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: isLight
+                            ? AppColors.textSecondary
+                            : AppColors.textSecondaryDark,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 32),
-            const Divider(),
-            const SizedBox(height: 20),
-
-            _detailRow('Target Weight', '${g.targetGrams} grams'),
-            _detailRow('Purchased Weight', '${g.purchasedGrams} grams'),
-            _detailRow(
-              'Remaining Weight Gap',
-              '${remainingGrams.toStringAsFixed(2)} grams',
-            ),
-            _detailRow(
-              'Spot Rate Reference (22K)',
-              '₹${NumberFormat('#,##,###').format(spotPrice)}/g',
-            ),
-            _detailRow(
-              'Estimated Outstanding Budget',
-              '₹${NumberFormat('#,##,###').format(estimatedValueRemaining)}',
-            ),
-
-            const Spacer(),
-            PrimaryButton(
-              text: 'Record Gold Purchase',
-              onPressed: () => context.push('/add-saving/$goalId'),
-            ),
-          ],
+              const SizedBox(height: 40),
+              const MiSectionHeader(title: "Gram Trajectory Details"),
+              const SizedBox(height: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: isLight ? Colors.white : AppColors.surfaceDark,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isLight ? AppColors.border : AppColors.borderDark,
+                    width: 1.2,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    _detailRow(
+                      'Target Weight',
+                      '${g.targetGrams} grams',
+                      context,
+                    ),
+                    _detailRow(
+                      'Purchased Weight',
+                      '${g.purchasedGrams} grams',
+                      context,
+                    ),
+                    _detailRow(
+                      'Remaining Weight Gap',
+                      '${remainingGrams.toStringAsFixed(2)} grams',
+                      context,
+                    ),
+                    _detailRow(
+                      'Spot Reference (22K)',
+                      '₹${NumberFormat('#,##,###').format(spotPrice)}/g',
+                      context,
+                    ),
+                    _detailRow(
+                      'Estimated Gap Value',
+                      '₹${NumberFormat('#,##,###').format(estimatedValueRemaining)}',
+                      context,
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              PrimaryButton(
+                text: 'Record Gold Purchase',
+                onPressed: () => context.push('/add-saving/$goalId'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _detailRow(String label, String value) {
+  Widget _detailRow(String label, String value, BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Column(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              Text(
-                value,
-                style: AppTextStyles.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          Text(
+            label,
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: isLight
+                  ? AppColors.textSecondary
+                  : AppColors.textSecondaryDark,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: 8),
-          const Divider(height: 1),
+          Text(
+            value,
+            style: AppTextStyles.bodyLarge.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isLight
+                  ? AppColors.textPrimary
+                  : AppColors.textPrimaryDark,
+            ),
+          ),
         ],
       ),
     );
@@ -491,7 +576,11 @@ class _GoldAlertSettingsScreenState
     extends ConsumerState<GoldAlertSettingsScreen> {
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
+      backgroundColor: isLight
+          ? AppColors.background
+          : AppColors.backgroundDark,
       appBar: MiBackAppBar(
         title: 'Alert Configuration',
         onBackPressed: () => context.pop(),
@@ -511,10 +600,10 @@ class _GoldAlertBottomSheetContent extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<_GoldAlertBottomSheetContent> createState() =>
-      __GoldAlertBottomSheetContentState();
+      _GoldAlertBottomSheetContentState();
 }
 
-class __GoldAlertBottomSheetContentState
+class _GoldAlertBottomSheetContentState
     extends ConsumerState<_GoldAlertBottomSheetContent> {
   double _threshold = 1.0;
   bool _daily = true;
@@ -532,12 +621,12 @@ class __GoldAlertBottomSheetContentState
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
       padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
+        left: 24,
+        right: 24,
+        top: 24,
         bottom: widget.isFullScreenRoute
-            ? 20
-            : MediaQuery.of(context).viewInsets.bottom + 24,
+            ? 24
+            : MediaQuery.of(context).viewInsets.bottom + 28,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -546,36 +635,50 @@ class __GoldAlertBottomSheetContentState
           if (!widget.isFullScreenRoute) ...[
             Center(
               child: Container(
-                width: 36,
-                height: 4,
+                width: 40,
+                height: 5,
                 decoration: BoxDecoration(
                   color: isLight ? AppColors.border : AppColors.borderDark,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(2.5),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
           ],
-          const Text(
-            'WHEN SHOULD WE ALERT YOU?',
-            style: AppTextStyles.headlineLarge,
-          ),
-          AppSpacing.heightS,
           Text(
-            'GoalPilot monitors spot price feeds and alerts you immediately when thresholds match.',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+            'Price Alert Preferences',
+            style: AppTextStyles.displayMedium.copyWith(
+              fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 28),
+          const SizedBox(height: 8),
+          Text(
+            'GoalPilot monitors spot price feeds and alerts you immediately when thresholds match.',
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: isLight
+                  ? AppColors.textSecondary
+                  : AppColors.textSecondaryDark,
+            ),
+          ),
+          const SizedBox(height: 32),
 
           Text(
             'ALERT TRIGGER PRICE DROP',
-            style: AppTextStyles.caption.copyWith(fontWeight: FontWeight.bold),
+            style: AppTextStyles.caption.copyWith(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
           ),
-          AppSpacing.heightS,
+          const SizedBox(height: 8),
           DropdownButtonFormField<double>(
-            decoration: const InputDecoration(labelText: 'Trigger Percentage'),
+            dropdownColor: isLight ? Colors.white : AppColors.surfaceDark,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: isLight ? Colors.white : AppColors.surfaceDark,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
             initialValue: _threshold,
             items: const [
               DropdownMenuItem(value: 0.5, child: Text('0.5% price drop')),
@@ -585,25 +688,34 @@ class __GoldAlertBottomSheetContentState
             ],
             onChanged: (val) => setState(() => _threshold = val ?? 1.0),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 24),
 
           SwitchListTile(
-            title: const Text(
+            title: Text(
               'Daily Morning Update',
-              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              style: AppTextStyles.titleLarge.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            subtitle: const Text(
+            subtitle: Text(
               'Summary of market closing rates sent at 9:00 AM.',
-              style: AppTextStyles.caption,
+              style: AppTextStyles.caption.copyWith(
+                color: isLight
+                    ? AppColors.textSecondary
+                    : AppColors.textLightDark,
+              ),
             ),
             value: _daily,
             onChanged: (val) => setState(() => _daily = val),
+            activeThumbColor: isLight
+                ? AppColors.primary
+                : AppColors.accentDark,
             contentPadding: EdgeInsets.zero,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 36),
 
           PrimaryButton(
-            text: 'SAVE PRICE ALERT PREFERENCE',
+            text: 'Save Projections Alert',
             onPressed: () {
               ref
                   .read(goldViewModelProvider.notifier)

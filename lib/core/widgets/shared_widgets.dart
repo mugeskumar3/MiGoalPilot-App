@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:migoalpilot_app/app/theme/app_colors.dart';
 import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
@@ -96,7 +97,7 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1400),
     );
     _animation = Tween<double>(
       begin: 0,
@@ -109,13 +110,12 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
   void didUpdateWidget(covariant GoalJourneyProgress oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.progress != widget.progress) {
-      _animation =
-          Tween<double>(
-            begin: oldWidget.progress,
-            end: widget.progress,
-          ).animate(
-            CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-          );
+      _animation = Tween<double>(
+        begin: oldWidget.progress,
+        end: widget.progress,
+      ).animate(
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+      );
       _controller.reset();
       _controller.forward();
     }
@@ -151,131 +151,74 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
       builder: (context, constraints) {
         final double width = constraints.maxWidth;
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'START',
-                  style: AppTextStyles.caption.copyWith(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                Text(
-                  '25%',
-                  style: AppTextStyles.caption.copyWith(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  '50%',
-                  style: AppTextStyles.caption.copyWith(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  '75%',
-                  style: AppTextStyles.caption.copyWith(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  'TARGET',
-                  style: AppTextStyles.caption.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 9,
-                    color: isLight ? AppColors.primary : AppColors.primaryDark,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ],
-            ),
-            AppSpacing.heightXS,
             AnimatedBuilder(
               animation: _animation,
               builder: (context, child) {
-                final currentProgress = _animation.value;
+                final val = _animation.value;
+                final filledWidth = width * val;
+                
                 return Stack(
                   alignment: Alignment.centerLeft,
+                  clipBehavior: Clip.none,
                   children: [
+                    // Background track (Forest/Sage path)
                     Container(
-                      height: 3,
+                      height: 4,
                       width: width,
                       decoration: BoxDecoration(
                         color: isLight
-                            ? AppColors.border
+                            ? const Color(0xFFE5DFD0)
                             : AppColors.borderDark,
-                        borderRadius: BorderRadius.circular(1.5),
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
+                    // Progress line (Sage or Forest)
                     Container(
-                      height: 3,
-                      width: width * currentProgress,
+                      height: 4,
+                      width: filledWidth,
                       decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(1.5),
+                        color: isLight ? AppColors.secondary : color,
+                        borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(5, (index) {
-                        final markerPct = index * 0.25;
-                        final isMarkerPassed = currentProgress >= markerPct;
-                        return Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: isMarkerPassed
-                                ? AppColors
-                                      .accent
-                                : (isLight
-                                      ? AppColors.border
-                                      : AppColors.borderDark),
-                            border: Border.all(
-                              color: isLight
-                                  ? Colors.white
-                                  : AppColors.surfaceDark,
-                              width: 1,
-                            ),
-                          ),
-                        );
-                      }),
+                    // 0%, 50%, 100% Markers
+                    Positioned(
+                      left: 0,
+                      child: _buildPoint(val >= 0.0, isLight),
                     ),
-                    if (currentProgress > 0 && currentProgress < 1.0)
+                    Positioned(
+                      left: width * 0.5 - 4,
+                      child: _buildPoint(val >= 0.5, isLight),
+                    ),
+                    Positioned(
+                      right: 0,
+                      child: _buildPoint(val >= 1.0, isLight, isTarget: true),
+                    ),
+                    // Current Position Indicator (Flight node)
+                    if (val > 0.0 && val < 1.0)
                       Positioned(
-                        left: (width * currentProgress) - 8,
+                        left: filledWidth - 8,
                         child: Container(
                           width: 16,
                           height: 16,
                           decoration: BoxDecoration(
-                            color: isLight
-                                ? Colors.white
-                                : AppColors.surfaceDark,
+                            color: isLight ? AppColors.accent : Colors.white,
                             shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: color.withValues(alpha: 0.2),
-                                blurRadius: 4,
-                                spreadRadius: 1,
-                              ),
-                            ],
-                            border: Border.all(color: color, width: 2),
-                          ),
-                          child: Center(
-                            child: Container(
-                              width: 6,
-                              height: 6,
-                              decoration: const BoxDecoration(
-                                color: AppColors.accent,
-                                shape: BoxShape.circle,
-                              ),
+                            border: Border.all(
+                              color: isLight ? AppColors.primary : color,
+                              width: 3.5,
                             ),
+                            boxShadow: isLight
+                                ? [
+                                    BoxShadow(
+                                      color: AppColors.primary.withValues(alpha: 0.15),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    )
+                                  ]
+                                : null,
                           ),
                         ),
                       ),
@@ -283,9 +226,50 @@ class _GoalJourneyProgressState extends State<GoalJourneyProgress>
                 );
               },
             ),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'SAVED ${(widget.progress * 100).toStringAsFixed(0)}%',
+                  style: AppTextStyles.caption.copyWith(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                Text(
+                  'TARGET 100%',
+                  style: AppTextStyles.caption.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 10,
+                    color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildPoint(bool active, bool isLight, {bool isTarget = false}) {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: active 
+            ? AppColors.accent 
+            : (isLight ? const Color(0xFFC5C0B0) : Colors.grey.withValues(alpha: 0.4)),
+        border: Border.all(
+          color: isLight ? AppColors.surface : Colors.white,
+          width: 1.5,
+        ),
+      ),
     );
   }
 }
@@ -365,34 +349,59 @@ class GoldPriceWidget extends StatelessWidget {
       decimalDigits: 0,
     );
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isLight ? Colors.white : AppColors.surfaceDark,
-        borderRadius: BorderRadius.circular(12),
+        color: isLight ? AppColors.surface : AppColors.surfaceDark,
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(
           color: isLight ? AppColors.border : AppColors.borderDark,
+          width: 1.2,
         ),
+        boxShadow: isLight
+            ? [
+                BoxShadow(
+                  color: AppColors.accent.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                )
+              ]
+            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (isLight) ...[
+            Container(
+              height: 3,
+              width: 24,
+              decoration: BoxDecoration(
+                color: AppColors.accent,
+                borderRadius: BorderRadius.circular(1.5),
+              ),
+            ),
+            const SizedBox(height: 14),
+          ],
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'Gold $karat',
                 style: AppTextStyles.caption.copyWith(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w800,
+                  color: isLight ? AppColors.primary : null,
+                  letterSpacing: 0.5,
                 ),
               ),
               PriceChangeIndicator(change: change),
             ],
           ),
-          AppSpacing.heightS,
+          const SizedBox(height: 10),
           Text(
             '${formatter.format(price)}/g',
             style: AppTextStyles.headlineMedium.copyWith(
               fontWeight: FontWeight.w800,
+              fontSize: 20,
+              color: isLight ? AppColors.primary : AppColors.textPrimaryDark,
             ),
           ),
         ],
@@ -453,16 +462,13 @@ class AiInsightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isLight
-            ? AppColors.secondary.withValues(alpha: 0.04)
-            : AppColors.surfaceDark,
-        borderRadius: BorderRadius.circular(12),
+        color: isLight ? const Color(0xFFF2EFE8) : AppColors.surfaceDark,
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: isLight
-              ? AppColors.secondary.withValues(alpha: 0.1)
-              : AppColors.borderDark,
+          color: isLight ? const Color(0xFFE5DFD0) : AppColors.borderDark,
+          width: 1.2,
         ),
       ),
       child: Column(
@@ -471,46 +477,56 @@ class AiInsightCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: isLight
-                      ? AppColors.secondary.withValues(alpha: 0.1)
-                      : Colors.black26,
+                  color: isLight ? AppColors.primary.withValues(alpha: 0.08) : Colors.black26,
                   shape: BoxShape.circle,
                 ),
                 child: const Text('✨', style: TextStyle(fontSize: 12)),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Text(
                 title.toUpperCase(),
                 style: AppTextStyles.caption.copyWith(
-                  color: isLight ? AppColors.secondary : AppColors.primaryDark,
-                  letterSpacing: 0.5,
+                  color: isLight ? AppColors.primary : AppColors.accentDark,
+                  letterSpacing: 1.0,
                   fontWeight: FontWeight.w800,
+                  fontSize: 11,
                 ),
               ),
             ],
           ),
-          AppSpacing.heightS,
+          const SizedBox(height: 14),
           Text(
             description,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: isLight
-                  ? AppColors.textPrimary
-                  : AppColors.textSecondaryDark,
-              height: 1.4,
+              color: isLight ? AppColors.primary : const Color(0xFFE2E8F0),
+              height: 1.5,
+              fontSize: 14,
+              fontWeight: isLight ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
           if (onViewDetails != null) ...[
-            AppSpacing.heightS,
+            const SizedBox(height: 16),
             GestureDetector(
               onTap: onViewDetails,
-              child: Text(
-                'Consult GoalPilot AI →',
-                style: AppTextStyles.caption.copyWith(
-                  color: isLight ? AppColors.secondary : AppColors.primaryDark,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    'Consult GoalPilot AI',
+                    style: AppTextStyles.caption.copyWith(
+                      color: isLight ? AppColors.primary : AppColors.accentDark,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    size: 14,
+                    color: isLight ? AppColors.primary : AppColors.accentDark,
+                  ),
+                ],
               ),
             ),
           ],
@@ -845,7 +861,7 @@ class MiBackAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, size: 20),
-        onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
+        onPressed: onBackPressed ?? () => context.pop(),
       ),
       actions: actions,
       backgroundColor: Colors.transparent,
@@ -953,8 +969,20 @@ class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     final bgColor = isLight ? AppColors.background : AppColors.backgroundDark;
 
     return Container(
-      color: bgColor.withValues(alpha: t > 0.8 ? 0.98 : 1.0),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        color: bgColor,
+        gradient: isLight && t < 0.8
+            ? RadialGradient(
+                center: const Alignment(-0.8, -0.6),
+                radius: 1.8,
+                colors: [
+                  const Color(0xFFFFFDF9).withValues(alpha: 1.0 - t),
+                  AppColors.background.withValues(alpha: 1.0 - t),
+                ],
+              )
+            : null,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       alignment: Alignment.center,
       child: Padding(
         padding: EdgeInsets.only(top: topPadding),
@@ -972,22 +1000,24 @@ class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                     Text(
                       'Good morning,\n$userName 👋',
                       style: AppTextStyles.displayLarge.copyWith(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
+                        fontSize: isLight ? 28 : 22,
+                        fontWeight: FontWeight.w800,
                         color: isLight
-                            ? AppColors.textPrimary
+                            ? AppColors.primary
                             : AppColors.textPrimaryDark,
-                        height: 1.25,
+                        height: 1.15,
+                        letterSpacing: isLight ? -0.8 : -0.3,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 6),
                     Text(
                       "Let's move your goals forward.",
                       style: AppTextStyles.caption.copyWith(
                         color: isLight
                             ? AppColors.textSecondary
                             : AppColors.textSecondaryDark,
-                        fontSize: 12,
+                        fontSize: 12.5,
+                        fontWeight: isLight ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
                   ],

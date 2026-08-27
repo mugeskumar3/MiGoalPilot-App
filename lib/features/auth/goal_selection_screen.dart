@@ -12,110 +12,123 @@ class GoalSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
+      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
       appBar: MiBackAppBar(
         title: 'Choose Path',
         onBackPressed: () => context.pop(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: 20),
-            const Text(
-              'Create a New Plan',
-              style: AppTextStyles.displayMedium,
-              textAlign: TextAlign.center,
-            ),
-            AppSpacing.heightS,
-            Text(
-              'Input parameters manually or describe your dream to GoalPilot AI.',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: isLight
-                    ? AppColors.textSecondary
-                    : AppColors.textSecondaryDark,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 24),
+              Text(
+                'Create a New Plan',
+                style: AppTextStyles.displayLarge.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const Spacer(),
+              AppSpacing.heightS,
+              Text(
+                'Build custom targets manually or describe your dream to GoalPilot AI.',
+                style: AppTextStyles.bodyLarge.copyWith(
+                  color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const Spacer(),
 
-            InkWell(
-              onTap: () => context.go('/create-goal'),
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(24.0),
-                decoration: BoxDecoration(
-                  color: isLight ? Colors.white : AppColors.surfaceDark,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isLight ? AppColors.border : AppColors.borderDark,
+              // Manual Builder option
+              InkWell(
+                onTap: () => context.go('/create-goal'),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(28.0),
+                  decoration: BoxDecoration(
+                    color: isLight ? Colors.white : AppColors.surfaceDark,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isLight ? AppColors.border : AppColors.borderDark,
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.secondary.withValues(alpha: 0.08),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Text('✍️', style: TextStyle(fontSize: 28)),
+                      ),
+                      AppSpacing.heightM,
+                      const Text(
+                        'Manual Goal Builder',
+                        style: AppTextStyles.headlineMedium,
+                      ),
+                      AppSpacing.heightXS,
+                      Text(
+                        'Target amount, deadlines, categories and custom weekly targets.',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
-                child: Column(
-                  children: [
-                    const Text('✍️', style: TextStyle(fontSize: 32)),
-                    AppSpacing.heightS,
-                    const Text(
-                      'Manual Goal Builder',
-                      style: AppTextStyles.titleLarge,
-                    ),
-                    AppSpacing.heightXS,
-                    Text(
-                      'Target amount, deadlines, categories and custom weekly targets.',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: isLight
-                            ? AppColors.textSecondary
-                            : AppColors.textSecondaryDark,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
               ),
-            ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
-            InkWell(
-              onTap: () => context.go('/ai-goal-creation'),
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(24.0),
-                decoration: BoxDecoration(
-                  color: isLight
-                      ? AppColors.secondary.withValues(alpha: 0.04)
-                      : AppColors.surfaceDark,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isLight
-                        ? AppColors.secondary.withValues(alpha: 0.15)
-                        : AppColors.primaryDark.withValues(alpha: 0.3),
+              // AI builder option
+              InkWell(
+                onTap: () => context.go('/ai-goal-creation'),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.all(28.0),
+                  decoration: BoxDecoration(
+                    color: isLight ? Colors.white : AppColors.surfaceDark,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: isLight ? AppColors.accent.withValues(alpha: 0.3) : AppColors.accentDark.withValues(alpha: 0.3),
+                      width: 1.2,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.accent.withValues(alpha: 0.08),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Text('✨', style: TextStyle(fontSize: 28)),
+                      ),
+                      AppSpacing.heightM,
+                      const Text(
+                        'Create with GoalPilot AI',
+                        style: AppTextStyles.headlineMedium,
+                      ),
+                      AppSpacing.heightXS,
+                      Text(
+                        'Tell our copilot your target naturally and let AI draft the steps.',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
-                child: Column(
-                  children: [
-                    const Text('✨', style: TextStyle(fontSize: 32)),
-                    AppSpacing.heightS,
-                    const Text(
-                      'Create with GoalPilot AI',
-                      style: AppTextStyles.titleLarge,
-                    ),
-                    AppSpacing.heightXS,
-                    Text(
-                      'Tell our copilot your target naturally and let AI draft the steps.',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: isLight
-                            ? AppColors.textSecondary
-                            : AppColors.textSecondaryDark,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
               ),
-            ),
-            const Spacer(flex: 2),
-          ],
+              const Spacer(flex: 2),
+            ],
+          ),
         ),
       ),
     );

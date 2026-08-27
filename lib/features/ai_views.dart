@@ -51,23 +51,23 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
     final isLight = Theme.of(context).brightness == Brightness.light;
 
     return Scaffold(
+      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
       appBar: MiAppBar(
-        title: '✨ GoalPilot AI',
-        subtitle: 'Your personal goal companion',
+        title: 'GoalPilot AI',
+        subtitle: 'Personal savings & deadline co-pilot',
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, size: 20),
+          icon: const Icon(Icons.arrow_back_rounded, size: 20),
           onPressed: () => context.pop(),
         ),
       ),
       body: Column(
         children: [
-
           Expanded(
             child: state.messages.isEmpty
                 ? _buildQuickSuggestions()
                 : ListView.builder(
                     controller: _scrollController,
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     itemCount: state.messages.length,
                     itemBuilder: (context, index) {
                       final msg = state.messages[index];
@@ -78,22 +78,22 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
 
           if (state.isTyping)
             Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Row(
                   children: [
                     const SizedBox(
-                      width: 12,
-                      height: 12,
+                      width: 14,
+                      height: 14,
                       child: CircularProgressIndicator(
-                        strokeWidth: 1.5,
+                        strokeWidth: 2,
                         color: AppColors.secondary,
                       ),
                     ),
                     AppSpacing.widthS,
                     Text(
-                      'GoalPilot is drafting...',
+                      'GoalPilot AI is writing...',
                       style: AppTextStyles.caption.copyWith(
                         fontStyle: FontStyle.italic,
                       ),
@@ -105,16 +105,17 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
 
           Container(
             padding: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              top: 12,
-              bottom: MediaQuery.of(context).padding.bottom + 12,
+              left: 20,
+              right: 20,
+              top: 14,
+              bottom: MediaQuery.of(context).padding.bottom + 14,
             ),
             decoration: BoxDecoration(
               color: isLight ? Colors.white : AppColors.surfaceDark,
               border: Border(
                 top: BorderSide(
                   color: isLight ? AppColors.border : AppColors.borderDark,
+                  width: 1.2,
                 ),
               ),
             ),
@@ -122,17 +123,24 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
               children: [
                 Expanded(
                   child: AppTextField(
-                    label: 'Ask AI Planner...',
+                    label: 'Ask AI Decision Assistant...',
                     controller: _messageController,
                   ),
                 ),
                 const SizedBox(width: 12),
-                IconButton(
-                  icon: Icon(
-                    Icons.send_rounded,
-                    color: isLight ? AppColors.primary : AppColors.primaryDark,
+                Container(
+                  decoration: BoxDecoration(
+                    color: isLight ? AppColors.primary : AppColors.accentDark,
+                    shape: BoxShape.circle,
                   ),
-                  onPressed: _send,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.send_rounded,
+                      color: isLight ? Colors.white : AppColors.backgroundDark,
+                      size: 20,
+                    ),
+                    onPressed: _send,
+                  ),
                 ),
               ],
             ),
@@ -143,6 +151,7 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
   }
 
   Widget _buildQuickSuggestions() {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     final suggestions = [
       'Can I afford my goals?',
       'How much should I save?',
@@ -150,27 +159,50 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
       'What if I shift my house deadline?',
     ];
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('✨', style: TextStyle(fontSize: 40)),
-          AppSpacing.heightM,
-          const Text('Suggested Actions', style: AppTextStyles.titleLarge),
-          AppSpacing.heightS,
-          const Text(
-            'Tap a prompt below to run co-pilot optimization simulations.',
-            style: AppTextStyles.caption,
-            textAlign: TextAlign.center,
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isLight ? Colors.white : AppColors.surfaceDark,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isLight ? AppColors.border : AppColors.borderDark,
+                width: 1.2,
+              ),
+            ),
+            child: const Text('✨', style: TextStyle(fontSize: 40)),
           ),
           const SizedBox(height: 24),
+          const Text('Suggested Action Projections', style: AppTextStyles.headlineLarge),
+          AppSpacing.heightS,
+          Text(
+            'Tap a prompt below to run co-pilot optimization simulations.',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 10,
+            runSpacing: 10,
             alignment: WrapAlignment.center,
             children: suggestions.map((p) {
               return ActionChip(
-                label: Text(p, style: const TextStyle(fontSize: 12)),
+                backgroundColor: isLight ? Colors.white : AppColors.surfaceDark,
+                side: BorderSide(color: isLight ? AppColors.border : AppColors.borderDark, width: 1.2),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                label: Text(
+                  p, 
+                  style: TextStyle(
+                    fontSize: 13, 
+                    fontWeight: FontWeight.bold,
+                    color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+                  ),
+                ),
                 onPressed: () {
                   ref.read(aiViewModelProvider.notifier).sendMessage(p);
                 },
@@ -188,20 +220,26 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
       return Align(
         alignment: Alignment.centerRight,
         child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
           decoration: BoxDecoration(
             color: isLight ? AppColors.primary : AppColors.surfaceDark,
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+              bottomLeft: Radius.circular(20),
+            ),
+            border: Border.all(
+              color: isLight ? AppColors.primary : AppColors.borderDark,
+              width: 1.2,
             ),
           ),
           child: Text(
             msg.text,
             style: TextStyle(
               color: isLight ? Colors.white : AppColors.textPrimaryDark,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
@@ -220,35 +258,27 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
   Widget _buildStructuredMessageBlocks(String text, BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
 
-    bool hasInsight =
-        text.contains('uses') ||
-        text.contains('paces') ||
-        text.contains('budget') ||
-        text.contains('down');
-    bool hasPlan =
-        text.contains('Recommending:') ||
-        text.contains('consider') ||
-        text.contains('recommend');
+    bool hasInsight = text.contains('uses') || text.contains('paces') || text.contains('budget') || text.contains('down');
+    bool hasPlan = text.contains('Recommending:') || text.contains('consider') || text.contains('recommend');
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: isLight
-                    ? AppColors.secondary.withValues(alpha: 0.1)
-                    : Colors.black12,
+                color: isLight ? AppColors.secondary.withValues(alpha: 0.1) : Colors.black12,
                 shape: BoxShape.circle,
               ),
-              child: const Text('✨', style: TextStyle(fontSize: 10)),
+              child: const Text('✨', style: TextStyle(fontSize: 12)),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             Text(
-              'GOALPILOT ASSISTANT',
+              'GOALPILOT CO-PILOT AI',
               style: AppTextStyles.caption.copyWith(
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.5,
               ),
             ),
           ],
@@ -256,23 +286,31 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
         const SizedBox(height: 8),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: isLight ? Colors.white : AppColors.surfaceDark,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isLight ? AppColors.border : AppColors.borderDark,
+              width: 1.2,
             ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(text, style: AppTextStyles.bodyLarge.copyWith(fontSize: 14)),
+              Text(
+                text, 
+                style: AppTextStyles.bodyLarge.copyWith(
+                  fontSize: 14.5,
+                  height: 1.5,
+                  color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+                ),
+              ),
               if (hasInsight) ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 _blockCard(
                   context,
-                  'INSIGHT',
+                  'CO-PILOT CAPACITY INSIGHT',
                   'Simulated available limits: ₹45,000/month. Goal balance constraints mapped.',
                   Icons.analytics_outlined,
                   AppColors.info,
@@ -282,7 +320,7 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
                 const SizedBox(height: 12),
                 _blockCard(
                   context,
-                  'PLAN ACTIONS',
+                  'RECOMMENDED ADJUSTMENTS',
                   'Extend lower tier targets by 4 months, or adjust weekly parameters.',
                   Icons.checklist_rtl_outlined,
                   AppColors.warning,
@@ -303,17 +341,17 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
     Color color,
   ) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withValues(alpha: 0.15)),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.15), width: 1.2),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 16),
-          const SizedBox(width: 10),
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,7 +368,7 @@ class _AiAssistantScreenState extends ConsumerState<AiAssistantScreen> {
                 const SizedBox(height: 4),
                 Text(
                   content,
-                  style: AppTextStyles.bodyMedium.copyWith(fontSize: 12),
+                  style: AppTextStyles.bodyMedium.copyWith(fontSize: 12.5),
                 ),
               ],
             ),
@@ -345,8 +383,7 @@ class AiGoalCreationScreen extends ConsumerStatefulWidget {
   const AiGoalCreationScreen({super.key});
 
   @override
-  ConsumerState<AiGoalCreationScreen> createState() =>
-      _AiGoalCreationScreenState();
+  ConsumerState<AiGoalCreationScreen> createState() => _AiGoalCreationScreenState();
 }
 
 class _AiGoalCreationScreenState extends ConsumerState<AiGoalCreationScreen> {
@@ -364,9 +401,7 @@ class _AiGoalCreationScreenState extends ConsumerState<AiGoalCreationScreen> {
     final text = _inputController.text.trim();
     if (text.isNotEmpty) {
       setState(() => _isLoading = true);
-      final intent = await ref
-          .read(aiViewModelProvider.notifier)
-          .parseGoalCreationQuery(text);
+      final intent = await ref.read(aiViewModelProvider.notifier).parseGoalCreationQuery(text);
       setState(() {
         _structuredIntent = intent;
         _isLoading = false;
@@ -401,35 +436,40 @@ class _AiGoalCreationScreenState extends ConsumerState<AiGoalCreationScreen> {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
+      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
       appBar: MiBackAppBar(
         title: 'AI Goal Creation',
         onBackPressed: () => context.pop(),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Describe your dream plan',
-              style: AppTextStyles.headlineLarge,
+            Text(
+              'Describe your target dream',
+              style: AppTextStyles.displayMedium.copyWith(fontWeight: FontWeight.w800),
             ),
-            AppSpacing.heightS,
+            const SizedBox(height: 8),
             Text(
               'Input details naturally. Example: "I want to save for a car worth 8 lakh in two years."',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: AppTextStyles.bodyLarge.copyWith(
+                color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32),
             TextFormField(
               controller: _inputController,
               maxLines: 4,
-              decoration: const InputDecoration(
-                hintText: 'Describe your destination goal target...',
+              style: const TextStyle(fontSize: 14.5),
+              decoration: InputDecoration(
+                hintText: 'Describe your destination goal target details...',
+                filled: true,
+                fillColor: isLight ? Colors.white : AppColors.surfaceDark,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
             PrimaryButton(
               text: 'ANALYZE PLAN INTENT',
               isLoading: _isLoading,
@@ -437,44 +477,28 @@ class _AiGoalCreationScreenState extends ConsumerState<AiGoalCreationScreen> {
             ),
 
             if (_structuredIntent != null) ...[
-              const SizedBox(height: 32),
+              const SizedBox(height: 40),
               const Divider(),
               const SizedBox(height: 24),
-              Text(
-                'UNDERSTOOD DRAFT TARGET',
-                style: AppTextStyles.caption.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
+              const MiSectionHeader(title: "Understood Draft Projections"),
+              const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
                   color: isLight ? Colors.white : AppColors.surfaceDark,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isLight ? AppColors.border : AppColors.borderDark,
+                    width: 1.2,
                   ),
                 ),
                 child: Column(
                   children: [
-                    _draftRow(
-                      'Draft Goal Category',
-                      _structuredIntent!['type'].toString().toUpperCase(),
-                    ),
-                    _draftRow('Goal Name Estimate', _structuredIntent!['name']),
-                    _draftRow(
-                      'Estimated Target Budget',
-                      '₹${NumberFormat('#,##,###').format(_structuredIntent!['targetAmount'])}',
-                    ),
-                    _draftRow(
-                      'Timeline Maturity',
-                      '${_structuredIntent!['months']} Months',
-                    ),
-                    _draftRow(
-                      'Target Monthly Savings',
-                      '₹${NumberFormat('#,##,###').format(_structuredIntent!['monthlySavingsNeeded'])}/month',
-                    ),
+                    _draftRow('Category Path', _structuredIntent!['type'].toString().toUpperCase(), context),
+                    _draftRow('Goal Name Estimate', _structuredIntent!['name'], context),
+                    _draftRow('Estimated Target Budget', '₹${NumberFormat('#,##,###').format(_structuredIntent!['targetAmount'])}', context),
+                    _draftRow('Timeline Maturity', '${_structuredIntent!['months']} Months', context),
+                    _draftRow('Target Monthly Savings', '₹${NumberFormat('#,##,###').format(_structuredIntent!['monthlySavingsNeeded'])}/month', context),
                   ],
                 ),
               ),
@@ -487,7 +511,7 @@ class _AiGoalCreationScreenState extends ConsumerState<AiGoalCreationScreen> {
                       onPressed: () => context.push('/create-goal'),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: PrimaryButton(
                       text: 'CONFIRM PLAN',
@@ -503,25 +527,27 @@ class _AiGoalCreationScreenState extends ConsumerState<AiGoalCreationScreen> {
     );
   }
 
-  Widget _draftRow(String label, String value) {
+  Widget _draftRow(String label, String value, BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label, style: AppTextStyles.caption),
-              Text(
-                value,
-                style: AppTextStyles.titleMedium.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          Text(
+            label, 
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          const SizedBox(height: 6),
-          const Divider(height: 1),
+          Text(
+            value,
+            style: AppTextStyles.bodyLarge.copyWith(
+              fontWeight: FontWeight.bold,
+              color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+            ),
+          ),
         ],
       ),
     );

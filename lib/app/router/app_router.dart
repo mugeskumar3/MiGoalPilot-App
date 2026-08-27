@@ -8,7 +8,10 @@ import 'package:migoalpilot_app/features/gold_views.dart';
 import 'package:migoalpilot_app/features/ai_views.dart';
 import 'package:migoalpilot_app/features/couple_views.dart';
 import 'package:migoalpilot_app/features/profile_views.dart';
+import 'package:migoalpilot_app/features/edit_profile_views.dart';
+import 'package:migoalpilot_app/features/profile_detail_views.dart';
 import 'package:migoalpilot_app/features/multi_goal_views.dart';
+import 'package:migoalpilot_app/features/legal_views.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -174,6 +177,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/privacy',
       builder: (context, state) => const PrivacyScreen(),
+    ),
+
+    GoRoute(
+      path: '/edit-profile',
+      builder: (context, state) => const EditProfileScreen(),
+    ),
+
+    GoRoute(
+      path: '/profile-detail',
+      builder: (context, state) => const ProfileDetailScreen(),
     ),
 
     GoRoute(
