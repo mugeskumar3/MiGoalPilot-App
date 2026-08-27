@@ -9,6 +9,9 @@ import 'package:migoalpilot/core/widgets/shared_widgets.dart';
 import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
 import 'package:migoalpilot/core/models/models.dart';
 import 'package:migoalpilot/shared/enums/enums.dart';
+import 'package:migoalpilot/core/services/goal_health_calculator.dart';
+import 'package:migoalpilot/core/services/goal_milestone_calculator.dart';
+import 'package:migoalpilot/core/services/smart_reminder_engine.dart';
 
 class HomeDashboardScreen extends ConsumerWidget {
   const HomeDashboardScreen({super.key});
@@ -19,6 +22,7 @@ class HomeDashboardScreen extends ConsumerWidget {
     final goalsState = ref.watch(goalsViewModelProvider);
     final goldState = ref.watch(goldViewModelProvider);
     final aiState = ref.watch(aiViewModelProvider);
+    final reminderState = ref.watch(smartReminderViewModelProvider);
     final isLight = Theme.of(context).brightness == Brightness.light;
 
     final userName = authState.user?.name ?? 'Mugesh';
@@ -148,6 +152,174 @@ class HomeDashboardScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 32),
                     ],
+
+                    if (reminderState.activeReminder != null) ...[
+                      _buildSmartReminderBanner(
+                        context,
+                        reminderState.activeReminder!,
+                        isLight,
+                      ),
+                      const SizedBox(height: 32),
+                    ],
+
+                    // Monthly Snapshot Entry Point Card
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 32),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isLight
+                              ? [
+                                  AppColors.secondary.withValues(alpha: 0.06),
+                                  AppColors.secondary.withValues(alpha: 0.02),
+                                ]
+                              : [
+                                  AppColors.surfaceDark,
+                                  AppColors.backgroundDark,
+                                ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isLight
+                              ? AppColors.secondary.withValues(alpha: 0.12)
+                              : AppColors.borderDark,
+                          width: 1.2,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text('📊', style: TextStyle(fontSize: 18)),
+                              const SizedBox(width: 8),
+                              Text(
+                                'MONTHLY SNAPSHOT',
+                                style: AppTextStyles.caption.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: isLight ? AppColors.secondary : AppColors.accentDark,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Your Goal Progress Check-In',
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Review how your savings, goal health, and contributions stack up this month compared to last.',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => context.push('/monthly-snapshot'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isLight ? AppColors.secondary : AppColors.accentDark,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              minimumSize: const Size(double.infinity, 44),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'View Financial Snapshot',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Smart Savings Plan Banner Card
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 32),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: isLight
+                              ? [
+                                  AppColors.primary.withValues(alpha: 0.06),
+                                  AppColors.primary.withValues(alpha: 0.02),
+                                ]
+                              : [
+                                  AppColors.surfaceDark,
+                                  AppColors.backgroundDark,
+                                ],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isLight
+                              ? AppColors.primary.withValues(alpha: 0.12)
+                              : AppColors.borderDark,
+                          width: 1.2,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Text('💡', style: TextStyle(fontSize: 18)),
+                              const SizedBox(width: 8),
+                              Text(
+                                'SMART SAVINGS PLAN',
+                                style: AppTextStyles.caption.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: isLight
+                                      ? AppColors.primary
+                                      : AppColors.primaryDark,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Balance monthly savings capacity dynamically across all active goals to optimize your timelines.',
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              fontSize: 13,
+                              color: isLight
+                                  ? AppColors.textSecondary
+                                  : AppColors.textSecondaryDark,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => context.push('/multi-goal'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isLight
+                                  ? AppColors.primary
+                                  : AppColors.primaryDark,
+                              foregroundColor: isLight
+                                  ? Colors.white
+                                  : AppColors.backgroundDark,
+                              elevation: 0,
+                              minimumSize: const Size(double.infinity, 44),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'Open Rebalancing Cockpit',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
                     // Next Action Center
                     const MiSectionHeader(title: "Today's Next Action"),
@@ -357,7 +529,39 @@ class HomeDashboardScreen extends ConsumerWidget {
                                           ),
                                         ],
                                       ),
-                                      GoalHealthBadge(health: g.health),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          GoalHealthBadge(health: g.health),
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 4,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  (isLight
+                                                          ? AppColors.primary
+                                                          : AppColors
+                                                                .primaryDark)
+                                                      .withValues(alpha: 0.08),
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            child: Text(
+                                              '${g.healthScore}',
+                                              style: AppTextStyles.caption
+                                                  .copyWith(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: isLight
+                                                        ? AppColors.primary
+                                                        : AppColors.primaryDark,
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 14),
@@ -419,6 +623,106 @@ class HomeDashboardScreen extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSmartReminderBanner(
+    BuildContext context,
+    ReminderResult r,
+    bool isLight,
+  ) {
+    final isHigh = r.priority == ReminderPriority.high;
+    final isMedium = r.priority == ReminderPriority.medium;
+
+    Color iconBgColor;
+    String emoji;
+    if (isHigh) {
+      iconBgColor = AppColors.error.withValues(alpha: 0.08);
+      emoji = '⚠️';
+    } else if (isMedium) {
+      iconBgColor = AppColors.warning.withValues(alpha: 0.08);
+      emoji = '💡';
+    } else {
+      iconBgColor = AppColors.success.withValues(alpha: 0.08);
+      emoji = '🔔';
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: isLight ? Colors.white : AppColors.surfaceDark,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isHigh
+              ? AppColors.error.withValues(alpha: 0.2)
+              : (isMedium
+                    ? AppColors.warning.withValues(alpha: 0.2)
+                    : (isLight ? AppColors.border : AppColors.borderDark)),
+          width: 1.2,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: iconBgColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(emoji, style: const TextStyle(fontSize: 16)),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                r.title.toUpperCase(),
+                style: AppTextStyles.caption.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: isHigh
+                      ? AppColors.error
+                      : (isLight
+                            ? AppColors.textPrimary
+                            : AppColors.textPrimaryDark),
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            r.message,
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: isLight
+                  ? AppColors.textSecondary
+                  : AppColors.textSecondaryDark,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => context.push(r.actionRoute),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isHigh
+                  ? AppColors.error
+                  : (isLight ? AppColors.primary : AppColors.primaryDark),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              minimumSize: const Size(double.infinity, 44),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: Text(
+              r.actionLabel,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -501,7 +805,39 @@ class GoalsScreen extends ConsumerWidget {
                                 ),
                               ],
                             ),
-                            GoalHealthBadge(health: g.health),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GoalHealthBadge(health: g.health),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        (Theme.of(context).brightness ==
+                                                    Brightness.light
+                                                ? AppColors.primary
+                                                : AppColors.primaryDark)
+                                            .withValues(alpha: 0.08),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    '${g.healthScore}',
+                                    style: AppTextStyles.caption.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          Theme.of(context).brightness ==
+                                              Brightness.light
+                                          ? AppColors.primary
+                                          : AppColors.primaryDark,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                         const SizedBox(height: 14),
@@ -1207,9 +1543,21 @@ class GoalDetailScreen extends ConsumerWidget {
         : null;
 
     final isMarriage = g.type == GoalType.marriage;
+    final healthResult = GoalHealthCalculator.calculate(g, state.transactions);
+
+    if (state.newlyUnlockedMilestone != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showMilestoneCelebrationDialog(
+          context,
+          ref,
+          state.newlyUnlockedMilestone!,
+          g,
+        );
+      });
+    }
 
     return DefaultTabController(
-      length: isMarriage ? 5 : 2,
+      length: isMarriage ? 7 : 4,
       child: Scaffold(
         backgroundColor: isLight
             ? AppColors.background
@@ -1301,8 +1649,8 @@ class GoalDetailScreen extends ConsumerWidget {
               ),
             ),
             TabBar(
-              isScrollable: isMarriage,
-              tabAlignment: isMarriage ? TabAlignment.start : null,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
               dividerColor: isLight ? AppColors.border : AppColors.borderDark,
               indicatorColor: isLight
                   ? AppColors.primary
@@ -1317,12 +1665,19 @@ class GoalDetailScreen extends ConsumerWidget {
               tabs: isMarriage
                   ? const [
                       Tab(text: 'Overview'),
+                      Tab(text: 'Milestones'),
                       Tab(text: 'Savings'),
+                      Tab(text: 'Health Analysis'),
                       Tab(text: 'Marriage Budget'),
                       Tab(text: 'Marriage Timeline'),
                       Tab(text: 'AI Optimizer'),
                     ]
-                  : const [Tab(text: 'Overview'), Tab(text: 'Savings')],
+                  : const [
+                      Tab(text: 'Overview'),
+                      Tab(text: 'Milestones'),
+                      Tab(text: 'Savings'),
+                      Tab(text: 'Health Analysis'),
+                    ],
             ),
             Expanded(
               child: TabBarView(
@@ -1334,7 +1689,12 @@ class GoalDetailScreen extends ConsumerWidget {
                           weeklyTarget: weeklyTarget,
                           goalId: goalId,
                         ),
+                        _MilestonesTab(
+                          goal: g,
+                          transactions: state.transactions,
+                        ),
                         _SavingsTab(transactions: state.transactions),
+                        _HealthAnalysisTab(result: healthResult, goal: g),
                         _MarriageBudgetTab(marriageState: marriageState!),
                         _MarriageTimelineTab(
                           marriageState: marriageState,
@@ -1349,13 +1709,92 @@ class GoalDetailScreen extends ConsumerWidget {
                           weeklyTarget: weeklyTarget,
                           goalId: goalId,
                         ),
+                        _MilestonesTab(
+                          goal: g,
+                          transactions: state.transactions,
+                        ),
                         _SavingsTab(transactions: state.transactions),
+                        _HealthAnalysisTab(result: healthResult, goal: g),
                       ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showMilestoneCelebrationDialog(
+    BuildContext context,
+    WidgetRef ref,
+    GoalMilestone milestone,
+    Goal goal,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext ctx) {
+        final isLight = Theme.of(ctx).brightness == Brightness.light;
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: isLight ? Colors.white : AppColors.surfaceDark,
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  '🎉 Milestone Unlocked!',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.secondary,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'You\'ve completed ${milestone.percentage}% of your ${goal.name}.',
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.bodyLarge,
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.success.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    goal.type == GoalType.gold
+                        ? '${milestone.targetAmount.toStringAsFixed(2)}g saved'
+                        : '₹${(milestone.targetAmount).toStringAsFixed(0)} saved',
+                    style: AppTextStyles.titleMedium.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.success,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                PrimaryButton(
+                  text: 'Awesome!',
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    ref
+                        .read(goalDetailViewModelProvider(goal.id).notifier)
+                        .clearCelebration();
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -1931,6 +2370,60 @@ class _AddSavingScreenState extends ConsumerState<AddSavingScreen> {
             PrimaryButton(text: 'RECORD CONTRIBUTION', onPressed: _submit),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _HealthAnalysisTab extends StatelessWidget {
+  final GoalHealthResult result;
+  final Goal goal;
+
+  const _HealthAnalysisTab({required this.result, required this.goal});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 10),
+          GoalHealthScoreWidget(result: result),
+          const SizedBox(height: 30),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Health Parameters Breakdown",
+              style: AppTextStyles.titleMedium.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          GoalHealthBreakdownWidget(
+            result: result,
+            targetDate: goal.targetDate,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MilestonesTab extends StatelessWidget {
+  final Goal goal;
+  final List<SavingsTransaction> transactions;
+
+  const _MilestonesTab({required this.goal, required this.transactions});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
+      child: GoalMilestonesTimelineWidget(
+        goal: goal,
+        transactions: transactions,
       ),
     );
   }

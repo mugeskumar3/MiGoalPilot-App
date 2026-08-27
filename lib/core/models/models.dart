@@ -68,6 +68,8 @@ class Goal {
   final double targetGrams;
   final double purchasedGrams;
   final bool isShared;
+  final int healthScore;
+  final List<int> completedMilestones;
 
   Goal({
     required this.id,
@@ -81,6 +83,8 @@ class Goal {
     this.targetGrams = 0.0,
     this.purchasedGrams = 0.0,
     this.isShared = false,
+    this.healthScore = 100,
+    this.completedMilestones = const [],
   });
 
   double get progressPercentage {
@@ -103,7 +107,9 @@ class Goal {
     GoalHealth? health,
     double? targetGrams,
     double? purchasedGrams,
-    bool? isShared,
+     bool? isShared,
+    int? healthScore,
+    List<int>? completedMilestones,
   }) {
     return Goal(
       id: id ?? this.id,
@@ -117,6 +123,8 @@ class Goal {
       targetGrams: targetGrams ?? this.targetGrams,
       purchasedGrams: purchasedGrams ?? this.purchasedGrams,
       isShared: isShared ?? this.isShared,
+      healthScore: healthScore ?? this.healthScore,
+      completedMilestones: completedMilestones ?? this.completedMilestones,
     );
   }
 
@@ -133,6 +141,10 @@ class Goal {
       targetGrams: (json['targetGrams'] ?? 0.0 as num).toDouble(),
       purchasedGrams: (json['purchasedGrams'] ?? 0.0 as num).toDouble(),
       isShared: json['isShared'] ?? false,
+      healthScore: json['healthScore'] != null ? json['healthScore'] as int : 100,
+      completedMilestones: json['completedMilestones'] != null
+          ? List<int>.from(json['completedMilestones'] as List)
+          : const [],
     );
   }
 
@@ -148,6 +160,8 @@ class Goal {
         'targetGrams': targetGrams,
         'purchasedGrams': purchasedGrams,
         'isShared': isShared,
+        'healthScore': healthScore,
+        'completedMilestones': completedMilestones,
       };
 }
 

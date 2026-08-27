@@ -12,6 +12,7 @@ import 'package:migoalpilot/features/edit_profile_views.dart';
 import 'package:migoalpilot/features/profile_detail_views.dart';
 import 'package:migoalpilot/features/multi_goal_views.dart';
 import 'package:migoalpilot/features/legal_views.dart';
+import 'package:migoalpilot/features/monthly_snapshot_views.dart';
 import 'package:migoalpilot/app/constants/app_constants.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -68,6 +69,11 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) => const ProfileScreen(),
         ),
       ],
+    ),
+
+    GoRoute(
+      path: '/monthly-snapshot',
+      builder: (context, state) => const MonthlySnapshotScreen(),
     ),
 
     GoRoute(

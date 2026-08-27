@@ -143,6 +143,22 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
                   progress: percent,
                   color: isLight ? AppColors.primary : AppColors.accentDark,
                 ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () => context.push('/monthly-snapshot'),
+                  icon: const Icon(Icons.analytics_outlined, size: 18),
+                  label: const Text('View Monthly Snapshot'),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 44),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    side: BorderSide(
+                      color: isLight ? AppColors.primary : AppColors.accentDark,
+                    ),
+                    foregroundColor: isLight ? AppColors.primary : AppColors.accentDark,
+                  ),
+                ),
               ],
             ),
           ),
@@ -1041,23 +1057,15 @@ class SecurityScreen extends ConsumerWidget {
   }
 }
 
-class NotificationSettingsScreen extends StatefulWidget {
+class NotificationSettingsScreen extends ConsumerWidget {
   const NotificationSettingsScreen({super.key});
 
   @override
-  State<NotificationSettingsScreen> createState() =>
-      _NotificationSettingsScreenState();
-}
-
-class _NotificationSettingsScreenState
-    extends State<NotificationSettingsScreen> {
-  bool _reminders = true;
-  bool _milestones = true;
-  bool _deadlines = true;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileState = ref.watch(profileViewModelProvider);
+    final profileNotifier = ref.read(profileViewModelProvider.notifier);
     final isLight = Theme.of(context).brightness == Brightness.light;
+
     return Scaffold(
       backgroundColor: isLight
           ? AppColors.background
@@ -1086,8 +1094,8 @@ class _NotificationSettingsScreenState
                       : AppColors.textLightDark,
                 ),
               ),
-              value: _reminders,
-              onChanged: (val) => setState(() => _reminders = val),
+              value: profileState.remindersEnabled,
+              onChanged: (val) => profileNotifier.toggleReminders(val),
               activeTrackColor: isLight
                   ? AppColors.primary
                   : AppColors.accentDark,
@@ -1110,8 +1118,8 @@ class _NotificationSettingsScreenState
                       : AppColors.textLightDark,
                 ),
               ),
-              value: _milestones,
-              onChanged: (val) => setState(() => _milestones = val),
+              value: profileState.milestonesEnabled,
+              onChanged: (val) => profileNotifier.toggleMilestones(val),
               activeTrackColor: isLight
                   ? AppColors.primary
                   : AppColors.accentDark,
@@ -1134,8 +1142,32 @@ class _NotificationSettingsScreenState
                       : AppColors.textLightDark,
                 ),
               ),
-              value: _deadlines,
-              onChanged: (val) => setState(() => _deadlines = val),
+              value: profileState.deadlinesEnabled,
+              onChanged: (val) => profileNotifier.toggleDeadlines(val),
+              activeTrackColor: isLight
+                  ? AppColors.primary
+                  : AppColors.accentDark,
+              contentPadding: EdgeInsets.zero,
+            ),
+            const Divider(),
+            SwitchListTile(
+              title: Text(
+                'Gold Price Alerts',
+                style: AppTextStyles.titleLarge.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: isLight ? AppColors.primary : Colors.white,
+                ),
+              ),
+              subtitle: Text(
+                'Receive gold opportunity alerts when market drop is detected.',
+                style: AppTextStyles.caption.copyWith(
+                  color: isLight
+                      ? AppColors.textSecondary
+                      : AppColors.textLightDark,
+                ),
+              ),
+              value: profileState.goldAlertsEnabled,
+              onChanged: (val) => profileNotifier.toggleGoldAlerts(val),
               activeTrackColor: isLight
                   ? AppColors.primary
                   : AppColors.accentDark,

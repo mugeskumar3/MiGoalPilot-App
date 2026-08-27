@@ -400,6 +400,7 @@ class MockAiRepository implements AiRepository {
 
 abstract class NotificationRepository {
   Future<List<NotificationItem>> getNotifications();
+  Future<void> addNotification(NotificationItem item);
 }
 
 class MockNotificationRepository implements NotificationRepository {
@@ -438,5 +439,10 @@ class MockNotificationRepository implements NotificationRepository {
   @override
   Future<List<NotificationItem>> getNotifications() async {
     return _list;
+  }
+
+  @override
+  Future<void> addNotification(NotificationItem item) async {
+    _list.insert(0, item);
   }
 }
