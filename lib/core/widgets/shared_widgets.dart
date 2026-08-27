@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:migoalpilot_app/app/theme/app_colors.dart';
-import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
-import 'package:migoalpilot_app/app/theme/app_spacing.dart';
-import 'package:migoalpilot_app/shared/enums/enums.dart';
+import 'package:migoalpilot/app/theme/app_colors.dart';
+import 'package:migoalpilot/app/theme/app_text_styles.dart';
+import 'package:migoalpilot/app/theme/app_spacing.dart';
+import 'package:migoalpilot/shared/enums/enums.dart';
+import 'package:migoalpilot/app/constants/app_constants.dart';
 
 class MoneyDisplay extends StatelessWidget {
   final double amount;
@@ -1029,7 +1030,7 @@ class _MiSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'MiGoalPilot',
+                  AppConstants.appName,
                   style: AppTextStyles.headlineLarge.copyWith(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,

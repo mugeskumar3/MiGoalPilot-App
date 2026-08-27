@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:migoalpilot_app/app/theme/app_colors.dart';
-import 'package:migoalpilot_app/app/theme/app_spacing.dart';
-import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
-import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
-import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
-import 'package:migoalpilot_app/core/models/models.dart';
-import 'package:migoalpilot_app/shared/enums/enums.dart';
+import 'package:migoalpilot/app/theme/app_colors.dart';
+import 'package:migoalpilot/app/theme/app_spacing.dart';
+import 'package:migoalpilot/app/theme/app_text_styles.dart';
+import 'package:migoalpilot/core/widgets/shared_widgets.dart';
+import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
+import 'package:migoalpilot/core/models/models.dart';
+import 'package:migoalpilot/shared/enums/enums.dart';
 
 class AiAssistantScreen extends ConsumerStatefulWidget {
   const AiAssistantScreen({super.key});

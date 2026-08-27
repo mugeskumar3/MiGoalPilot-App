@@ -1,6 +1,6 @@
 {
-    "name": "migoalpilot_app",
-    "short_name": "migoalpilot_app",
+    "name": "migoalpilot",
+    "short_name": "migoalpilot",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

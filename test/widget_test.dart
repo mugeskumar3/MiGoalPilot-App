@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:migoalpilot_app/main.dart';
+import 'package:migoalpilot/main.dart';
 
 void main() {
   testWidgets('App startup and onboarding navigation test', (WidgetTester tester) async {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:migoalpilot_app/core/models/models.dart';
-import 'package:migoalpilot_app/core/repositories/repositories.dart';
+import 'package:migoalpilot/core/models/models.dart';
+import 'package:migoalpilot/core/repositories/repositories.dart';
 
 final authRepositoryProvider = Provider<AuthRepository>((ref) => MockAuthRepository());
 final goalRepositoryProvider = Provider<GoalRepository>((ref) => MockGoalRepository());

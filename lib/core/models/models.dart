@@ -1,4 +1,4 @@
-import 'package:migoalpilot_app/shared/enums/enums.dart';
+import 'package:migoalpilot/shared/enums/enums.dart';
 
 class User {
   final String id;

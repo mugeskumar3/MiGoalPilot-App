@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:migoalpilot_app/app/router/main_navigation_shell.dart';
-import 'package:migoalpilot_app/features/auth_views.dart';
-import 'package:migoalpilot_app/features/dashboard_views.dart';
-import 'package:migoalpilot_app/features/marriage_views.dart';
-import 'package:migoalpilot_app/features/gold_views.dart';
-import 'package:migoalpilot_app/features/ai_views.dart';
-import 'package:migoalpilot_app/features/couple_views.dart';
-import 'package:migoalpilot_app/features/profile_views.dart';
-import 'package:migoalpilot_app/features/edit_profile_views.dart';
-import 'package:migoalpilot_app/features/profile_detail_views.dart';
-import 'package:migoalpilot_app/features/multi_goal_views.dart';
-import 'package:migoalpilot_app/features/legal_views.dart';
+import 'package:migoalpilot/app/router/main_navigation_shell.dart';
+import 'package:migoalpilot/features/auth_views.dart';
+import 'package:migoalpilot/features/dashboard_views.dart';
+import 'package:migoalpilot/features/marriage_views.dart';
+import 'package:migoalpilot/features/gold_views.dart';
+import 'package:migoalpilot/features/ai_views.dart';
+import 'package:migoalpilot/features/couple_views.dart';
+import 'package:migoalpilot/features/profile_views.dart';
+import 'package:migoalpilot/features/edit_profile_views.dart';
+import 'package:migoalpilot/features/profile_detail_views.dart';
+import 'package:migoalpilot/features/multi_goal_views.dart';
+import 'package:migoalpilot/features/legal_views.dart';
+import 'package:migoalpilot/app/constants/app_constants.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const SplashScreen(),
-    ),
+    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
 
     GoRoute(
       path: '/onboarding/:step',
@@ -30,10 +28,7 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
+    GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
 
     GoRoute(
       path: '/register',
@@ -197,7 +192,11 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/help',
       builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Help & Support Center\nContact support at contact@migoalpilot.com')),
+        body: Center(
+          child: Text(
+            'Help & Support Center\nContact support at contact@migoalpilot.com',
+          ),
+        ),
       ),
     ),
 
@@ -206,7 +205,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const Scaffold(
         body: Center(
           child: Text(
-            'MiGoalPilot v1.0.0\nFly Closer to Your Dreams. ✈️',
+            '${AppConstants.appName} v1.0.0\nFly Closer to Your Dreams. ✈️',
             textAlign: TextAlign.center,
           ),
         ),

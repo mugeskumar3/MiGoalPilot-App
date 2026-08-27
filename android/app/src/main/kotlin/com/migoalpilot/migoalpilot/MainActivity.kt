@@ -1,4 +1,4 @@
-package com.migoalpilot.migoalpilot_app
+package com.migoalpilot.migoalpilot
 
 import io.flutter.embedding.android.FlutterActivity
 

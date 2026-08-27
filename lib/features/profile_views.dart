@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:migoalpilot_app/app/theme/app_colors.dart';
-import 'package:migoalpilot_app/app/theme/app_spacing.dart';
-import 'package:migoalpilot_app/app/theme/app_text_styles.dart';
-import 'package:migoalpilot_app/core/widgets/shared_widgets.dart';
-import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
-import 'package:migoalpilot_app/core/models/models.dart';
+import 'package:migoalpilot/app/theme/app_colors.dart';
+import 'package:migoalpilot/app/theme/app_spacing.dart';
+import 'package:migoalpilot/app/theme/app_text_styles.dart';
+import 'package:migoalpilot/core/widgets/shared_widgets.dart';
+import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
+import 'package:migoalpilot/core/models/models.dart';
+import 'package:migoalpilot/app/constants/app_constants.dart';
 
 class ActivityScreen extends ConsumerStatefulWidget {
   const ActivityScreen({super.key});
@@ -593,7 +594,7 @@ class ProfileScreen extends ConsumerWidget {
                   _tileDivider(isLight),
                   _profileTile(context, Icons.support_agent_rounded, 'Help & Projections Center', 'FAQs, guides & contact support', '/help'),
                   _tileDivider(isLight),
-                  _profileTile(context, Icons.info_outline_rounded, 'About MiGoalPilot', 'Version info & credits', '/about'),
+                  _profileTile(context, Icons.info_outline_rounded, 'About ${AppConstants.appName}', 'Version info & credits', '/about'),
                 ]),
                 const SizedBox(height: 22),
 
@@ -630,7 +631,7 @@ class ProfileScreen extends ConsumerWidget {
                   child: Column(
                     children: [
                       Text(
-                        'MiGoalPilot v1.0.0',
+                        '${AppConstants.appName} v1.0.0',
                         style: AppTextStyles.caption.copyWith(
                           color: isLight ? AppColors.textLight : AppColors.textLightDark,
                           fontSize: 11,

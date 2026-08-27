@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:migoalpilot_app/app/router/app_router.dart';
-import 'package:migoalpilot_app/app/theme/app_colors.dart';
-import 'package:migoalpilot_app/app/theme/app_theme.dart';
-import 'package:migoalpilot_app/core/viewmodels/viewmodels.dart';
+import 'package:migoalpilot/app/router/app_router.dart';
+import 'package:migoalpilot/app/theme/app_colors.dart';
+import 'package:migoalpilot/app/theme/app_theme.dart';
+import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
+import 'package:migoalpilot/app/constants/app_constants.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +43,7 @@ class MiGoalPilotApp extends ConsumerWidget {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: systemOverlayStyle,
       child: MaterialApp.router(
-        title: 'MiGoalPilot',
+        title: AppConstants.appName,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,

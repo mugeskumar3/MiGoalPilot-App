@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:migoalpilot_app/core/models/models.dart';
-import 'package:migoalpilot_app/shared/enums/enums.dart';
+import 'package:migoalpilot/core/models/models.dart';
+import 'package:migoalpilot/shared/enums/enums.dart';
 
 abstract class AuthRepository {
   Future<User?> getCurrentUser();

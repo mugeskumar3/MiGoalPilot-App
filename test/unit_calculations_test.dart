@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:migoalpilot_app/core/models/models.dart';
-import 'package:migoalpilot_app/shared/enums/enums.dart';
+import 'package:migoalpilot/core/models/models.dart';
+import 'package:migoalpilot/shared/enums/enums.dart';
 
 void main() {
   group('Goal Financial Calculations', () {
