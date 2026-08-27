@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.migoalpilot" "\0"
-            VALUE "FileDescription", "migoalpilot_app" "\0"
+            VALUE "FileDescription", "migoalpilot" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "migoalpilot_app" "\0"
+            VALUE "InternalName", "migoalpilot" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 com.migoalpilot. All rights reserved." "\0"
-            VALUE "OriginalFilename", "migoalpilot_app.exe" "\0"
-            VALUE "ProductName", "migoalpilot_app" "\0"
+            VALUE "OriginalFilename", "migoalpilot.exe" "\0"
+            VALUE "ProductName", "migoalpilot" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
