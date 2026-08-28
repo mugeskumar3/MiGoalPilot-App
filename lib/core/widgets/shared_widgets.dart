@@ -10,7 +10,10 @@ import 'package:migoalpilot/core/services/goal_health_calculator.dart';
 import 'package:migoalpilot/core/models/models.dart';
 import 'package:migoalpilot/core/services/goal_milestone_calculator.dart';
 
-class MoneyDisplay extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
+
+class MoneyDisplay extends ConsumerWidget {
   final double amount;
   final TextStyle? style;
   final bool isSecure;
@@ -24,10 +27,33 @@ class MoneyDisplay extends StatelessWidget {
     this.prefix,
   });
 
+  static String format(WidgetRef ref, double amount, {bool isSecure = false}) {
+    final hideBalance = ref.read(profileViewModelProvider).hideBalance;
+    if (isSecure || hideBalance) {
+      return '₹••••••';
+    }
+    final formatter = NumberFormat.currency(
+      locale: 'en_IN',
+      symbol: '₹',
+      decimalDigits: 0,
+    );
+    return formatter.format(amount);
+  }
+
   @override
-  Widget build(BuildContext context) {
-    if (isSecure) {
-      return Text('••••••', style: style ?? AppTextStyles.headlineMedium);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hideBalance = ref.watch(profileViewModelProvider.select((s) => s.hideBalance));
+    if (isSecure || hideBalance) {
+      final prefixText = prefix ?? '';
+      return Text(
+        '$prefixText₹••••••',
+        style: style ??
+            AppTextStyles.headlineMedium.copyWith(
+              color: Theme.of(context).brightness == Brightness.light
+                  ? AppColors.textPrimary
+                  : AppColors.textPrimaryDark,
+            ),
+      );
     }
     final formatter = NumberFormat.currency(
       locale: 'en_IN',

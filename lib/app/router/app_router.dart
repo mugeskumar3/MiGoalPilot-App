@@ -14,6 +14,7 @@ import 'package:migoalpilot/features/multi_goal_views.dart';
 import 'package:migoalpilot/features/legal_views.dart';
 import 'package:migoalpilot/features/monthly_snapshot_views.dart';
 import 'package:migoalpilot/features/goal_analytics_views.dart';
+import 'package:migoalpilot/features/security_views.dart';
 import 'package:migoalpilot/app/constants/app_constants.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -167,7 +168,17 @@ final GoRouter appRouter = GoRouter(
 
     GoRoute(
       path: '/security',
-      builder: (context, state) => const SecurityScreen(),
+      builder: (context, state) => const SecuritySettingsScreen(),
+      routes: [
+        GoRoute(
+          path: 'pin-setup',
+          builder: (context, state) => const PinSetupScreen(),
+        ),
+        GoRoute(
+          path: 'sessions',
+          builder: (context, state) => const SessionManagementScreen(),
+        ),
+      ],
     ),
 
     GoRoute(

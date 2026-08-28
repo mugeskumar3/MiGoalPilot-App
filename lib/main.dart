@@ -6,6 +6,7 @@ import 'package:migoalpilot/app/theme/app_colors.dart';
 import 'package:migoalpilot/app/theme/app_theme.dart';
 import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
 import 'package:migoalpilot/app/constants/app_constants.dart';
+import 'package:migoalpilot/features/auth/app_lock_wrapper.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +50,9 @@ class MiGoalPilotApp extends ConsumerWidget {
         darkTheme: AppTheme.dark,
         themeMode: themeMode,
         routerConfig: appRouter,
+        builder: (context, child) {
+          return AppLockWrapper(child: child!);
+        },
       ),
     );
   }
