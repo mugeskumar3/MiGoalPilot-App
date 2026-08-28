@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:migoalpilot/app/router/main_navigation_shell.dart';
 import 'package:migoalpilot/features/auth/splash_screen.dart';
@@ -17,7 +16,6 @@ import 'package:migoalpilot/features/goals/presentation/screens/add_saving_scree
 import 'package:migoalpilot/features/marriage/presentation/screens/marriage_views.dart';
 import 'package:migoalpilot/features/gold/presentation/screens/gold_dashboard_screen.dart';
 import 'package:migoalpilot/features/gold/presentation/screens/gold_goal_detail_screen.dart';
-import 'package:migoalpilot/features/gold/presentation/screens/gold_alert_settings_screen.dart';
 
 import 'package:migoalpilot/features/ai/presentation/screens/ai_views.dart';
 import 'package:migoalpilot/features/couple/presentation/screens/couple_views.dart';
@@ -31,7 +29,6 @@ import 'package:migoalpilot/features/analytics/presentation/screens/goal_analyti
 import 'package:migoalpilot/features/security/presentation/screens/security_views.dart';
 import 'package:migoalpilot/features/goals/presentation/screens/goal_template_setup_views.dart';
 import 'package:migoalpilot/features/insights/presentation/screens/insights_screen.dart';
-import 'package:migoalpilot/app/constants/app_constants.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -165,10 +162,6 @@ final GoRouter appRouter = GoRouter(
       },
     ),
 
-    GoRoute(
-      path: '/gold-alerts',
-      builder: (context, state) => const GoldAlertSettingsScreen(),
-    ),
 
     GoRoute(
       path: '/notifications',
@@ -185,24 +178,14 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const CoupleModeScreen(),
     ),
 
-    GoRoute(
-      path: '/invite-partner',
-      builder: (context, state) => const InvitePartnerScreen(),
-    ),
 
     GoRoute(
-      path: '/security',
-      builder: (context, state) => const SecuritySettingsScreen(),
-      routes: [
-        GoRoute(
-          path: 'pin-setup',
-          builder: (context, state) => const PinSetupScreen(),
-        ),
-        GoRoute(
-          path: 'sessions',
-          builder: (context, state) => const SessionManagementScreen(),
-        ),
-      ],
+      path: '/security/pin-setup',
+      builder: (context, state) => const PinSetupScreen(),
+    ),
+    GoRoute(
+      path: '/security/sessions',
+      builder: (context, state) => const SessionManagementScreen(),
     ),
 
     GoRoute(
@@ -210,10 +193,6 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const NotificationSettingsScreen(),
     ),
 
-    GoRoute(
-      path: '/theme-settings',
-      builder: (context, state) => const ThemeSettingsScreen(),
-    ),
 
     GoRoute(
       path: '/privacy',
@@ -235,27 +214,5 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const MultiGoalScreen(),
     ),
 
-    GoRoute(
-      path: '/help',
-      builder: (context, state) => const Scaffold(
-        body: Center(
-          child: Text(
-            'Help & Support Center\nContact support at contact@migoalpilot.com',
-          ),
-        ),
-      ),
-    ),
-
-    GoRoute(
-      path: '/about',
-      builder: (context, state) => const Scaffold(
-        body: Center(
-          child: Text(
-            '${AppConstants.appName} v1.0.0\nFly Closer to Your Dreams. ✈️',
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    ),
   ],
 );

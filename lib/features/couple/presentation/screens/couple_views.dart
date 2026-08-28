@@ -7,14 +7,27 @@ import 'package:migoalpilot/app/theme/app_text_styles.dart';
 import 'package:migoalpilot/core/widgets/shared_widgets.dart';
 import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
 
-class CoupleModeScreen extends ConsumerWidget {
+class CoupleModeScreen extends ConsumerStatefulWidget {
   const CoupleModeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CoupleModeScreen> createState() => _CoupleModeScreenState();
+}
+
+class _CoupleModeScreenState extends ConsumerState<CoupleModeScreen> {
+  final _emailController = TextEditingController();
+  bool _inviteSent = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final goalsState = ref.watch(goalsViewModelProvider);
     final isLight = Theme.of(context).brightness == Brightness.light;
-
     final sharedGoals = goalsState.goals.where((g) => g.isShared).toList();
 
     return Scaffold(
@@ -22,18 +35,13 @@ class CoupleModeScreen extends ConsumerWidget {
       appBar: MiBackAppBar(
         title: 'Couple Shared Mode',
         onBackPressed: () => context.pop(),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.person_add_alt_1_outlined, color: isLight ? AppColors.primary : AppColors.accentDark),
-            onPressed: () => context.push('/invite-partner'),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Active Linked Partner Card
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -74,6 +82,77 @@ class CoupleModeScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Inline Invite Panel
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isLight ? Colors.white : AppColors.surfaceDark,
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: isLight ? AppColors.border : AppColors.borderDark,
+                  width: 1.2,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text('✉️', style: TextStyle(fontSize: 20)),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Link Another Partner',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Input partner\'s email below to link another dashboard and budget segments.',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  AppTextField(
+                    label: 'Partner email address',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const SizedBox(height: 16),
+                  PrimaryButton(
+                    text: _inviteSent ? 'INVITATION SENT' : 'SEND CONNECTION INVITE',
+                    onPressed: _inviteSent
+                        ? null
+                        : () {
+                            if (_emailController.text.contains('@')) {
+                              setState(() {
+                                _inviteSent = true;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Invitation sent to ${_emailController.text}!'),
+                                  backgroundColor: AppColors.success,
+                                ),
+                              );
+                              _emailController.clear();
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Please enter a valid email address'),
+                                  backgroundColor: AppColors.error,
+                                ),
+                              );
+                            }
+                          },
                   ),
                 ],
               ),
@@ -184,7 +263,7 @@ class CoupleModeScreen extends ConsumerWidget {
                             MoneyDisplay(
                               amount: totalTarget,
                               style: AppTextStyles.caption.copyWith(
-                                fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.bold,
                               ),
                             ),
                           ],
@@ -234,91 +313,6 @@ class _DualSegmentProgress extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class InvitePartnerScreen extends StatefulWidget {
-  const InvitePartnerScreen({super.key});
-
-  @override
-  State<InvitePartnerScreen> createState() => _InvitePartnerScreenState();
-}
-
-class _InvitePartnerScreenState extends State<InvitePartnerScreen> {
-  final _emailController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-    return Scaffold(
-      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
-      appBar: MiBackAppBar(
-        title: 'Invite Partner',
-        onBackPressed: () => context.pop(),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: isLight ? Colors.white : AppColors.surfaceDark,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isLight ? AppColors.border : AppColors.borderDark,
-                      width: 1.2,
-                    ),
-                  ),
-                  child: const Text('✉️', style: TextStyle(fontSize: 48)),
-                ),
-              ),
-              const SizedBox(height: 32),
-              Text(
-                'Connect Accounts', 
-                style: AppTextStyles.displayMedium.copyWith(fontWeight: FontWeight.w800),
-              ),
-              AppSpacing.heightS,
-              Text(
-                'Input your partner\'s email below. A request link will link your dashboard and budget segments.',
-                style: AppTextStyles.bodyLarge.copyWith(
-                  color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
-                ),
-              ),
-              const SizedBox(height: 40),
-              AppTextField(
-                label: 'Partner email address',
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(height: 32),
-              PrimaryButton(
-                text: 'SEND CONNECTION INVITE',
-                onPressed: () {
-                  if (_emailController.text.contains('@')) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Invitation sent successfully!'),
-                      ),
-                    );
-                    context.pop();
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

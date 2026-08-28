@@ -14,9 +14,9 @@ class MainActivity : FlutterFragmentActivity() {
             if (call.method == "setScreenProtection") {
                 val enabled = call.argument<Boolean>("enabled") ?: false
                 if (enabled) {
-                    activity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
                 } else {
-                    activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                 }
                 result.success(null)
             } else {

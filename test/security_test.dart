@@ -4,7 +4,6 @@ import 'package:migoalpilot/core/services/services.dart';
 import 'package:migoalpilot/core/services/security_service.dart';
 import 'package:migoalpilot/core/services/biometric_service.dart';
 import 'package:migoalpilot/core/repositories/session_repository.dart';
-import 'package:migoalpilot/core/viewmodels/security_viewmodel.dart';
 import 'package:migoalpilot/core/viewmodels/viewmodels.dart';
 
 class MockSecureStorageService extends Mock implements SecureStorageService {}

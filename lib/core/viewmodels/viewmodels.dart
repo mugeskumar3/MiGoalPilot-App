@@ -9,3 +9,4 @@ export 'package:migoalpilot/features/profile/presentation/viewmodels/profile_vie
 export 'package:migoalpilot/features/smart_savings/presentation/viewmodels/smart_savings_viewmodel.dart';
 export 'package:migoalpilot/features/reminders/presentation/viewmodels/smart_reminder_viewmodel.dart';
 export 'package:migoalpilot/features/monthly_snapshot/presentation/viewmodels/monthly_snapshot_viewmodel.dart';
+export 'package:migoalpilot/features/security/presentation/viewmodels/security_viewmodel.dart';

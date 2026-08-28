@@ -431,6 +431,8 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authViewModelProvider);
+    final profileState = ref.watch(profileViewModelProvider);
+    final securityState = ref.watch(securityViewModelProvider);
     final user = authState.user;
     final isLight = Theme.of(context).brightness == Brightness.light;
 
@@ -587,37 +589,173 @@ class ProfileScreen extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _profileGroup(context, 'Account', [
+                _profileGroup(context, 'Your Account', [
                   _profileTile(context, Icons.person_outline_rounded, 'Personal Information', 'Name, email, phone & country', '/profile-detail'),
-                  _tileDivider(isLight),
-                  _profileTile(context, Icons.lock_outline_rounded, 'Security & App Lock', 'Pin lock, balance visibility', '/security'),
-                ]),
-                const SizedBox(height: 18),
-
-                _profileGroup(context, 'Preferences', [
-                  _profileTile(context, Icons.palette_outlined, 'Theme Configuration', 'Light mode, dark mode, system', '/theme-settings'),
-                  _tileDivider(isLight),
-                  _profileTile(context, Icons.notifications_none_rounded, 'Notification Preferences', 'Reminders, milestones, deadlines', '/notification-settings'),
                   _tileDivider(isLight),
                   _profileTile(context, Icons.people_outline_rounded, 'Couple Shared Mode', 'Linked partner goals & tracking', '/couple-mode'),
                 ]),
                 const SizedBox(height: 18),
 
-                _profileGroup(context, 'Goals & AI', [
-                  _profileTile(context, Icons.compass_calibration_outlined, 'Goal Insights', 'Progress analytics & projections', '/goals'),
+                _profileGroup(context, 'Preferences', [
+                  _profileTile(context, Icons.notifications_none_rounded, 'Notification Preferences', 'Reminders, milestones, deadlines', '/notification-settings'),
                   _tileDivider(isLight),
-                  _profileTile(context, Icons.bar_chart_rounded, 'Savings Analytics', 'Visualize saving patterns and gold trends', '/goal-analytics'),
-                  _tileDivider(isLight),
-                  _profileTile(context, Icons.assistant_outlined, 'GoalPilot AI Assistant', 'AI savings companion settings', '/ai'),
+                  _buildThemeTile(context, ref, profileState, isLight),
                 ]),
                 const SizedBox(height: 18),
 
-                _profileGroup(context, 'Legal & Support', [
-                  _profileTile(context, Icons.gavel_outlined, 'Terms & Privacy Policy', 'Legal documents & data policy', '/privacy?tab=terms'),
+                _profileGroup(context, 'Security', [
+                  SwitchListTile(
+                    title: Text(
+                      'App Lock Pin',
+                      style: AppTextStyles.titleMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: isLight ? AppColors.primary : Colors.white,
+                        fontSize: 13.5,
+                      ),
+                    ),
+                    subtitle: Text(
+                      securityState.hasPin ? 'PIN Lock Active ✓' : 'Setup numeric PIN lock',
+                      style: AppTextStyles.caption.copyWith(fontSize: 10.5),
+                    ),
+                    value: securityState.appLockEnabled && securityState.hasPin,
+                    onChanged: (val) {
+                      if (val) {
+                        context.push('/security/pin-setup');
+                      } else {
+                        ref.read(securityViewModelProvider.notifier).disablePin();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('PIN Lock disabled successfully.')),
+                        );
+                      }
+                    },
+                    activeTrackColor: isLight ? AppColors.primary : AppColors.accentDark,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
                   _tileDivider(isLight),
-                  _profileTile(context, Icons.support_agent_rounded, 'Help & Projections Center', 'FAQs, guides & contact support', '/help'),
+                  if (securityState.hasPin) ...[
+                    ListTile(
+                      title: Text(
+                        'Change passcode PIN',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+                          fontSize: 13.5,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 13),
+                      onTap: () => context.push('/security/pin-setup'),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    _tileDivider(isLight),
+                    SwitchListTile(
+                      title: Text(
+                        'Biometric Login',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isLight ? AppColors.primary : Colors.white,
+                          fontSize: 13.5,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Use Face ID or fingerprint scan',
+                        style: AppTextStyles.caption.copyWith(fontSize: 10.5),
+                      ),
+                      value: securityState.biometricEnabled,
+                      onChanged: (val) => ref.read(securityViewModelProvider.notifier).toggleBiometric(val),
+                      activeTrackColor: isLight ? AppColors.primary : AppColors.accentDark,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    _tileDivider(isLight),
+                  ],
+                  SwitchListTile(
+                    title: Text(
+                      'Hide Dashboard Balance',
+                      style: AppTextStyles.titleMedium.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: isLight ? AppColors.primary : Colors.white,
+                        fontSize: 13.5,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Replaces saved portfolio figures with asterisks.',
+                      style: AppTextStyles.caption.copyWith(fontSize: 10.5),
+                    ),
+                    value: profileState.hideBalance,
+                    onChanged: (val) => ref.read(profileViewModelProvider.notifier).toggleHideBalance(val),
+                    activeTrackColor: isLight ? AppColors.primary : AppColors.accentDark,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  ),
+                ]),
+                const SizedBox(height: 18),
+
+                _profileGroup(context, 'Support & Legal', [
+                  ListTile(
+                    title: Text('Terms & Conditions', style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w600, fontSize: 13.5)),
+                    subtitle: const Text('Terms of service agreement', style: TextStyle(fontSize: 10.5)),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: isLight ? AppColors.primary.withValues(alpha: 0.06) : AppColors.accentDark.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.gavel_outlined, size: 19, color: isLight ? AppColors.primary : AppColors.accentDark),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 13),
+                    onTap: () => context.push('/privacy?tab=terms'),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  ),
                   _tileDivider(isLight),
-                  _profileTile(context, Icons.info_outline_rounded, 'About ${AppConstants.appName}', 'Version info & credits', '/about'),
+                  ListTile(
+                    title: Text('Privacy Policy', style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w600, fontSize: 13.5)),
+                    subtitle: const Text('Privacy and data collection guidelines', style: TextStyle(fontSize: 10.5)),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: isLight ? AppColors.primary.withValues(alpha: 0.06) : AppColors.accentDark.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.privacy_tip_outlined, size: 19, color: isLight ? AppColors.primary : AppColors.accentDark),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 13),
+                    onTap: () => context.push('/privacy?tab=privacy'),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  ),
+                  _tileDivider(isLight),
+                  ListTile(
+                    title: Text('Help & Support', style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w600, fontSize: 13.5)),
+                    subtitle: const Text('FAQs, user guides & direct contact support', style: TextStyle(fontSize: 10.5)),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: isLight ? AppColors.primary.withValues(alpha: 0.06) : AppColors.accentDark.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.support_agent_rounded, size: 19, color: isLight ? AppColors.primary : AppColors.accentDark),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 13),
+                    onTap: () => _showHelpDialog(context, isLight),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  ),
+                  _tileDivider(isLight),
+                  ListTile(
+                    title: Text('About MiGoalPilot', style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.w600, fontSize: 13.5)),
+                    subtitle: const Text('App version details & credits', style: TextStyle(fontSize: 10.5)),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: isLight ? AppColors.primary.withValues(alpha: 0.06) : AppColors.accentDark.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(Icons.info_outline_rounded, size: 19, color: isLight ? AppColors.primary : AppColors.accentDark),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 13),
+                    onTap: () => _showAboutDialog(context, isLight),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  ),
                 ]),
                 const SizedBox(height: 22),
 
@@ -883,6 +1021,111 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
+  Widget _buildThemeTile(
+    BuildContext context,
+    WidgetRef ref,
+    ProfileState state,
+    bool isLight,
+  ) {
+    final mode = state.themeMode;
+    String modeText;
+    IconData modeIcon;
+    switch (mode) {
+      case ThemeMode.light:
+        modeText = 'Light';
+        modeIcon = Icons.light_mode_outlined;
+        break;
+      case ThemeMode.dark:
+        modeText = 'Dark';
+        modeIcon = Icons.dark_mode_outlined;
+        break;
+      case ThemeMode.system:
+        modeText = 'System';
+        modeIcon = Icons.settings_suggest_outlined;
+        break;
+    }
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: isLight
+              ? AppColors.primary.withValues(alpha: 0.06)
+              : AppColors.accentDark.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(
+          Icons.palette_outlined,
+          color: isLight ? AppColors.primary : AppColors.accentDark,
+          size: 19,
+        ),
+      ),
+      title: Text(
+        'Theme Configuration',
+        style: AppTextStyles.titleMedium.copyWith(
+          fontWeight: FontWeight.w600,
+          color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+          fontSize: 13.5,
+        ),
+      ),
+      subtitle: Text(
+        'Tap to cycle mode: Light ➔ Dark ➔ System',
+        style: AppTextStyles.caption.copyWith(
+          color: isLight ? AppColors.textLight : AppColors.textLightDark,
+          fontSize: 10.5,
+        ),
+      ),
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isLight
+              ? AppColors.softSurface
+              : AppColors.surfaceDark,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isLight ? AppColors.border : AppColors.borderDark,
+            width: 1.0,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              modeIcon,
+              size: 14,
+              color: isLight ? AppColors.primary : AppColors.accentDark,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              modeText,
+              style: AppTextStyles.caption.copyWith(
+                fontWeight: FontWeight.bold,
+                color: isLight ? AppColors.textPrimary : AppColors.textPrimaryDark,
+              ),
+            ),
+          ],
+        ),
+      ),
+      onTap: () {
+        ThemeMode nextMode;
+        switch (mode) {
+          case ThemeMode.light:
+            nextMode = ThemeMode.dark;
+            break;
+          case ThemeMode.dark:
+            nextMode = ThemeMode.system;
+            break;
+          case ThemeMode.system:
+            nextMode = ThemeMode.light;
+            break;
+        }
+        ref.read(profileViewModelProvider.notifier).toggleTheme(nextMode);
+      },
+    );
+  }
+
   Widget _buildActionTile(
     BuildContext context,
     WidgetRef ref,
@@ -984,81 +1227,66 @@ class ProfileScreen extends ConsumerWidget {
       ),
     );
   }
-}
 
-class SecurityScreen extends ConsumerWidget {
-  const SecurityScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(profileViewModelProvider);
-    final isLight = Theme.of(context).brightness == Brightness.light;
-
-    return Scaffold(
-      backgroundColor: isLight
-          ? AppColors.background
-          : AppColors.backgroundDark,
-      appBar: MiBackAppBar(
-        title: 'Security & Safety',
-        onBackPressed: () => context.pop(),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            SwitchListTile(
-              title: Text(
-                'App Lock Pin',
-                style: AppTextStyles.titleLarge.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isLight ? AppColors.primary : Colors.white,
-                ),
-              ),
-              subtitle: Text(
-                'Requires verification on startup.',
-                style: AppTextStyles.caption.copyWith(
-                  color: isLight
-                      ? AppColors.textSecondary
-                      : AppColors.textLightDark,
-                ),
-              ),
-              value: state.appLockEnabled,
-              onChanged: (val) => ref
-                  .read(profileViewModelProvider.notifier)
-                  .toggleAppLock(val),
-              activeTrackColor: isLight
-                  ? AppColors.primary
-                  : AppColors.accentDark,
-              contentPadding: EdgeInsets.zero,
-            ),
-            const Divider(),
-            SwitchListTile(
-              title: Text(
-                'Hide Dashboard Balance',
-                style: AppTextStyles.titleLarge.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: isLight ? AppColors.primary : Colors.white,
-                ),
-              ),
-              subtitle: Text(
-                'Replaces saved portfolio figures with asterisks.',
-                style: AppTextStyles.caption.copyWith(
-                  color: isLight
-                      ? AppColors.textSecondary
-                      : AppColors.textLightDark,
-                ),
-              ),
-              value: state.hideBalance,
-              onChanged: (val) => ref
-                  .read(profileViewModelProvider.notifier)
-                  .toggleHideBalance(val),
-              activeTrackColor: isLight
-                  ? AppColors.primary
-                  : AppColors.accentDark,
-              contentPadding: EdgeInsets.zero,
-            ),
-          ],
+  void _showAboutDialog(BuildContext context, bool isLight) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
+        title: Text(
+          'About MiGoalPilot',
+          style: AppTextStyles.titleLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: isLight ? AppColors.primary : Colors.white,
+          ),
+        ),
+        content: const Text(
+          'MiGoalPilot v1.0.0\nFly Closer to Your Dreams. ✈️\n\n© 2026 Jeev Labs. All rights reserved.',
+          style: TextStyle(height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showHelpDialog(BuildContext context, bool isLight) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          'Help & Support Center',
+          style: AppTextStyles.titleLarge.copyWith(
+            fontWeight: FontWeight.bold,
+            color: isLight ? AppColors.primary : Colors.white,
+          ),
+        ),
+        content: const Text(
+          'Frequently Asked Questions:\n\n'
+          '• How is my gold value calculated?\n'
+          '  We use real-time market feeds matching 22K and 24K spot rates.\n\n'
+          '• How do I link a partner?\n'
+          '  Go to Your Account -> Couple Shared Mode and input email.\n\n'
+          'Contact Support: support@migoalpilot.com',
+          style: TextStyle(height: 1.4),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Close'),
+          ),
+        ],
       ),
     );
   }
@@ -1180,90 +1408,85 @@ class NotificationSettingsScreen extends ConsumerWidget {
                   : AppColors.accentDark,
               contentPadding: EdgeInsets.zero,
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ThemeSettingsScreen extends ConsumerWidget {
-  const ThemeSettingsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(profileViewModelProvider);
-    final isLight = Theme.of(context).brightness == Brightness.light;
-
-    return Scaffold(
-      backgroundColor: isLight
-          ? AppColors.background
-          : AppColors.backgroundDark,
-      appBar: MiBackAppBar(
-        title: 'Theme Settings',
-        onBackPressed: () => context.pop(),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Choose Application Mode',
-              style: AppTextStyles.displayMedium.copyWith(
-                fontWeight: FontWeight.w800,
-                color: isLight ? AppColors.primary : Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Select standard light styling or high contrast dark midnight modes.',
-              style: AppTextStyles.bodyLarge.copyWith(
-                color: isLight
-                    ? AppColors.textSecondary
-                    : AppColors.textSecondaryDark,
-              ),
-            ),
-            const SizedBox(height: 40),
-            Center(
-              child: SegmentedButton<ThemeMode>(
-                style: SegmentedButton.styleFrom(
-                  selectedBackgroundColor: isLight
-                      ? AppColors.primary
-                      : AppColors.accentDark,
-                  selectedForegroundColor: isLight
-                      ? Colors.white
-                      : AppColors.backgroundDark,
+            if (profileState.goldAlertsEnabled) ...[
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'TRIGGER THRESHOLD PRICE DROP',
+                      style: AppTextStyles.caption.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 10,
+                        color: isLight ? AppColors.textSecondary : AppColors.textSecondaryDark,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<double>(
+                      dropdownColor: isLight ? Colors.white : AppColors.surfaceDark,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: isLight ? Colors.white : AppColors.surfaceDark,
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: isLight ? AppColors.border : AppColors.borderDark,
+                          ),
+                        ),
+                      ),
+                      initialValue: ref.watch(goldViewModelProvider).alertThreshold,
+                      items: const [
+                        DropdownMenuItem(value: 0.5, child: Text('0.5% price drop')),
+                        DropdownMenuItem(value: 1.0, child: Text('1.0% price drop')),
+                        DropdownMenuItem(value: 2.0, child: Text('2.0% price drop')),
+                        DropdownMenuItem(value: 3.0, child: Text('3.0% price drop')),
+                      ],
+                      onChanged: (val) {
+                        final goldState = ref.read(goldViewModelProvider);
+                        ref.read(goldViewModelProvider.notifier).saveAlertSettings(
+                              val ?? 1.0,
+                              goldState.dailyUpdatesEnabled,
+                            );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: Text(
+                        'Daily Morning Update',
+                        style: AppTextStyles.titleMedium.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isLight ? AppColors.primary : Colors.white,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Summary of market closing rates sent at 9:00 AM.',
+                        style: AppTextStyles.caption.copyWith(
+                          color: isLight ? AppColors.textSecondary : AppColors.textLightDark,
+                        ),
+                      ),
+                      value: ref.watch(goldViewModelProvider).dailyUpdatesEnabled,
+                      onChanged: (val) {
+                        final goldState = ref.read(goldViewModelProvider);
+                        ref.read(goldViewModelProvider.notifier).saveAlertSettings(
+                              goldState.alertThreshold,
+                              val,
+                            );
+                      },
+                      activeTrackColor: isLight ? AppColors.primary : AppColors.accentDark,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ],
                 ),
-                segments: const [
-                  ButtonSegment<ThemeMode>(
-                    value: ThemeMode.light,
-                    label: Text('Light'),
-                    icon: Icon(Icons.light_mode_outlined),
-                  ),
-                  ButtonSegment<ThemeMode>(
-                    value: ThemeMode.dark,
-                    label: Text('Dark'),
-                    icon: Icon(Icons.dark_mode_outlined),
-                  ),
-                  ButtonSegment<ThemeMode>(
-                    value: ThemeMode.system,
-                    label: Text('System'),
-                    icon: Icon(Icons.settings_suggest_outlined),
-                  ),
-                ],
-                selected: {state.themeMode},
-                onSelectionChanged: (Set<ThemeMode> newSelection) {
-                  ref
-                      .read(profileViewModelProvider.notifier)
-                      .toggleTheme(newSelection.first);
-                },
               ),
-            ),
+            ],
           ],
         ),
       ),
     );
   }
 }
+
+
 

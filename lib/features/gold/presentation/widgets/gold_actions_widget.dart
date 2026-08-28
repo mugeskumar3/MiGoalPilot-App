@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:migoalpilot/app/theme/app_colors.dart';
 import 'package:migoalpilot/core/widgets/shared_widgets.dart';
+import 'package:migoalpilot/features/gold/presentation/screens/gold_alert_settings_screen.dart';
 
 class GoldActionsWidget extends StatelessWidget {
   final String goalId;
@@ -36,7 +37,17 @@ class GoldActionsWidget extends StatelessWidget {
               Icons.notifications_active_outlined,
               color: isLight ? AppColors.primary : AppColors.accentDark,
             ),
-            onPressed: () => context.push('/gold-alerts'),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: isLight ? AppColors.surface : AppColors.surfaceDark,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                ),
+                builder: (context) => const GoldAlertBottomSheetContent(isFullScreenRoute: false),
+              );
+            },
             tooltip: 'Set Price Alerts',
           ),
         ),
