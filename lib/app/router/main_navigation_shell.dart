@@ -17,7 +17,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     if (location.startsWith('/dashboard')) return 0;
     if (location.startsWith('/goals')) return 1;
     if (location.startsWith('/gold')) return 2;
-    if (location.startsWith('/activity')) return 3;
+    if (location.startsWith('/insights')) return 3;
     if (location.startsWith('/profile')) return 4;
     return 0;
   }
@@ -34,7 +34,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
         context.go('/gold');
         break;
       case 3:
-        context.go('/activity');
+        context.go('/insights');
         break;
       case 4:
         context.go('/profile');
@@ -134,7 +134,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                     _buildNavItem(0, Icons.compass_calibration_outlined, Icons.compass_calibration_rounded, 'Home', selectedIndex, context),
                     _buildNavItem(1, Icons.explore_outlined, Icons.explore_rounded, 'Goals', selectedIndex, context),
                     _buildNavItem(2, Icons.toll_outlined, Icons.toll_rounded, 'Gold', selectedIndex, context),
-                    _buildNavItem(3, Icons.insights_outlined, Icons.insights_rounded, 'Activity', selectedIndex, context),
+                    _buildNavItem(3, Icons.insights_outlined, Icons.insights_rounded, 'Insights', selectedIndex, context),
                     _buildNavItem(4, Icons.face_outlined, Icons.face_rounded, 'Profile', selectedIndex, context),
                   ],
                 ),

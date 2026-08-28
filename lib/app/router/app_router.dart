@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:migoalpilot/app/router/main_navigation_shell.dart';
-import 'package:migoalpilot/features/auth_views.dart';
-import 'package:migoalpilot/features/dashboard_views.dart';
-import 'package:migoalpilot/features/marriage_views.dart';
-import 'package:migoalpilot/features/gold_views.dart';
-import 'package:migoalpilot/features/ai_views.dart';
-import 'package:migoalpilot/features/couple_views.dart';
-import 'package:migoalpilot/features/profile_views.dart';
-import 'package:migoalpilot/features/edit_profile_views.dart';
-import 'package:migoalpilot/features/profile_detail_views.dart';
-import 'package:migoalpilot/features/multi_goal_views.dart';
-import 'package:migoalpilot/features/legal_views.dart';
-import 'package:migoalpilot/features/monthly_snapshot_views.dart';
-import 'package:migoalpilot/features/goal_analytics_views.dart';
-import 'package:migoalpilot/features/security_views.dart';
-import 'package:migoalpilot/features/goal_template_setup_views.dart';
+import 'package:migoalpilot/features/auth/splash_screen.dart';
+import 'package:migoalpilot/features/auth/onboarding_screen.dart';
+import 'package:migoalpilot/features/auth/login_screen.dart';
+import 'package:migoalpilot/features/auth/register_screen.dart';
+import 'package:migoalpilot/features/auth/forgot_password_screen.dart';
+import 'package:migoalpilot/features/auth/goal_selection_screen.dart';
+
+import 'package:migoalpilot/features/dashboard/presentation/screens/home_dashboard_screen.dart';
+import 'package:migoalpilot/features/goals/presentation/screens/goals_screen.dart';
+import 'package:migoalpilot/features/goals/presentation/screens/create_goal_screen.dart';
+import 'package:migoalpilot/features/goals/presentation/screens/goal_detail_screen.dart';
+import 'package:migoalpilot/features/goals/presentation/screens/add_saving_screen.dart';
+
+import 'package:migoalpilot/features/marriage/presentation/screens/marriage_views.dart';
+import 'package:migoalpilot/features/gold/presentation/screens/gold_dashboard_screen.dart';
+import 'package:migoalpilot/features/gold/presentation/screens/gold_goal_detail_screen.dart';
+import 'package:migoalpilot/features/gold/presentation/screens/gold_alert_settings_screen.dart';
+
+import 'package:migoalpilot/features/ai/presentation/screens/ai_views.dart';
+import 'package:migoalpilot/features/couple/presentation/screens/couple_views.dart';
+import 'package:migoalpilot/features/profile/presentation/screens/profile_views.dart';
+import 'package:migoalpilot/features/profile/presentation/screens/edit_profile_views.dart';
+import 'package:migoalpilot/features/profile/presentation/screens/profile_detail_views.dart';
+import 'package:migoalpilot/features/smart_savings/presentation/screens/multi_goal_views.dart';
+import 'package:migoalpilot/features/legal/presentation/screens/legal_views.dart';
+import 'package:migoalpilot/features/monthly_snapshot/presentation/screens/monthly_snapshot_views.dart';
+import 'package:migoalpilot/features/analytics/presentation/screens/goal_analytics_views.dart';
+import 'package:migoalpilot/features/security/presentation/screens/security_views.dart';
+import 'package:migoalpilot/features/goals/presentation/screens/goal_template_setup_views.dart';
+import 'package:migoalpilot/features/insights/presentation/screens/insights_screen.dart';
 import 'package:migoalpilot/app/constants/app_constants.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -63,8 +78,8 @@ final GoRouter appRouter = GoRouter(
         ),
 
         GoRoute(
-          path: '/activity',
-          builder: (context, state) => const ActivityScreen(),
+          path: '/insights',
+          builder: (context, state) => const InsightsScreen(),
         ),
 
         GoRoute(

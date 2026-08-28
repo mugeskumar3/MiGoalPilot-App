@@ -10,12 +10,63 @@ import 'package:migoalpilot/core/services/monthly_snapshot_calculator.dart';
 import 'package:migoalpilot/shared/enums/enums.dart';
 
 class MonthlySnapshotScreen extends ConsumerWidget {
-  const MonthlySnapshotScreen({super.key});
+  final bool isEmbedded;
+  const MonthlySnapshotScreen({super.key, this.isEmbedded = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(monthlySnapshotViewModelProvider);
     final isLight = Theme.of(context).brightness == Brightness.light;
+
+    final body = state.isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: () => ref.read(monthlySnapshotViewModelProvider.notifier).loadSnapshot(state.selectedMonth),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Month Navigator Section
+                    _buildMonthNavigator(context, ref, state),
+                    const SizedBox(height: 24),
+
+                    if (state.snapshot == null || state.snapshot!.isFutureMonth) ...[
+                      _buildEmptyState(isLight, state.selectedMonth),
+                    ] else ...[
+                      // Premium Summary Header Section
+                      _buildSummaryHeader(isLight, state.snapshot!),
+                      const SizedBox(height: 24),
+
+                      // Goals Progress Section
+                      _buildGoalsProgressList(isLight, state.snapshot!),
+                      const SizedBox(height: 28),
+
+                      // Saving Trend Chart Section
+                      _buildSavingsTrendChart(isLight, state.snapshot!),
+                      const SizedBox(height: 28),
+
+                      // Achievements Section
+                      if (state.snapshot!.achievements.isNotEmpty) ...[
+                        _buildAchievements(isLight, state.snapshot!),
+                        const SizedBox(height: 28),
+                      ],
+
+                      // AI & Deterministic Insight Section
+                      _buildInsightCard(isLight, state.snapshot!),
+                      const SizedBox(height: 28),
+
+                      // Smart Recommendation / CTA Section
+                      _buildRecommendationCard(context, isLight, state.snapshot!),
+                      const SizedBox(height: 40),
+                    ],
+                  ],
+                ),
+              ),
+            );
+
+    if (isEmbedded) return body;
 
     return Scaffold(
       backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
@@ -61,53 +112,7 @@ class MonthlySnapshotScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: state.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: () => ref.read(monthlySnapshotViewModelProvider.notifier).loadSnapshot(state.selectedMonth),
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Month Navigator Section
-                    _buildMonthNavigator(context, ref, state),
-                    const SizedBox(height: 24),
-
-                    if (state.snapshot == null || state.snapshot!.isFutureMonth) ...[
-                      _buildEmptyState(isLight, state.selectedMonth),
-                    ] else ...[
-                      // Premium Summary Header Section
-                      _buildSummaryHeader(isLight, state.snapshot!),
-                      const SizedBox(height: 24),
-
-                      // Goals Progress Section
-                      _buildGoalsProgressList(isLight, state.snapshot!),
-                      const SizedBox(height: 28),
-
-                      // Saving Trend Chart Section
-                      _buildSavingsTrendChart(isLight, state.snapshot!),
-                      const SizedBox(height: 28),
-
-                      // Achievements Section
-                      if (state.snapshot!.achievements.isNotEmpty) ...[
-                        _buildAchievements(isLight, state.snapshot!),
-                        const SizedBox(height: 28),
-                      ],
-
-                      // AI & Deterministic Insight Section
-                      _buildInsightCard(isLight, state.snapshot!),
-                      const SizedBox(height: 28),
-
-                      // Smart Recommendation / CTA Section
-                      _buildRecommendationCard(context, isLight, state.snapshot!),
-                      const SizedBox(height: 40),
-                    ],
-                  ],
-                ),
-              ),
-            ),
+      body: body,
     );
   }
 

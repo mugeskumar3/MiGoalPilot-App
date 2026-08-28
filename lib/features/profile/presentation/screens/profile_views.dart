@@ -11,7 +11,8 @@ import 'package:migoalpilot/core/models/models.dart';
 import 'package:migoalpilot/app/constants/app_constants.dart';
 
 class ActivityScreen extends ConsumerStatefulWidget {
-  const ActivityScreen({super.key});
+  final bool isEmbedded;
+  const ActivityScreen({super.key, this.isEmbedded = false});
 
   @override
   ConsumerState<ActivityScreen> createState() => _ActivityScreenState();
@@ -69,17 +70,9 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
     const targetThisMonth = 35000.0;
     final percent = (totalSavedThisMonth / targetThisMonth).clamp(0.0, 1.0);
 
-    return Scaffold(
-      backgroundColor: isLight
-          ? AppColors.background
-          : AppColors.backgroundDark,
-      appBar: const MiAppBar(
-        title: 'Activity Ledger',
-        subtitle: 'Contributions history index',
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+    final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 24.0,
@@ -284,10 +277,22 @@ class _ActivityScreenState extends ConsumerState<ActivityScreen> {
             ),
           ),
         ],
-      ),
-    );
+      );
+
+      if (widget.isEmbedded) return body;
+
+      return Scaffold(
+        backgroundColor: isLight
+            ? AppColors.background
+            : AppColors.backgroundDark,
+        appBar: const MiAppBar(
+          title: 'Activity Ledger',
+          subtitle: 'Contributions history index',
+        ),
+        body: body,
+      );
+    }
   }
-}
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});

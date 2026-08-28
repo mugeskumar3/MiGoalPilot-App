@@ -1,4 +1,4 @@
-import 'package:migoalpilot/core/repositories/session_repository.dart';
+import 'package:migoalpilot/features/security/domain/models/user_session.dart';
 
 class SecurityState {
   final bool isLocked;

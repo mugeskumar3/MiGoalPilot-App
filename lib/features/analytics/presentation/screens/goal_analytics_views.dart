@@ -30,7 +30,8 @@ final List<GoalFilterOption> filterOptions = [
 ];
 
 class GoalAnalyticsScreen extends ConsumerStatefulWidget {
-  const GoalAnalyticsScreen({super.key});
+  final bool isEmbedded;
+  const GoalAnalyticsScreen({super.key, this.isEmbedded = false});
 
   @override
   ConsumerState<GoalAnalyticsScreen> createState() => _GoalAnalyticsScreenState();
@@ -42,22 +43,15 @@ class _GoalAnalyticsScreenState extends ConsumerState<GoalAnalyticsScreen> {
     final state = ref.watch(goalAnalyticsViewModelProvider);
     final isLight = Theme.of(context).brightness == Brightness.light;
 
-    return Scaffold(
-      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
-      appBar: MiBackAppBar(
-        title: 'Goal Analytics',
-        onBackPressed: () => context.pop(),
-      ),
-      body: SafeArea(
-        child: state.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : RefreshIndicator(
-                onRefresh: () => ref.read(goalAnalyticsViewModelProvider.notifier).loadAnalytics(),
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    final body = state.isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : RefreshIndicator(
+            onRefresh: () => ref.read(goalAnalyticsViewModelProvider.notifier).loadAnalytics(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Range Selector (3M / 6M / 12M / Custom)
                       _buildRangeSelector(context, ref, state, isLight),
@@ -81,7 +75,18 @@ class _GoalAnalyticsScreenState extends ConsumerState<GoalAnalyticsScreen> {
                     ],
                   ),
                 ),
-              ),
+              );
+
+    if (widget.isEmbedded) return body;
+
+    return Scaffold(
+      backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
+      appBar: MiBackAppBar(
+        title: 'Goal Analytics',
+        onBackPressed: () => context.pop(),
+      ),
+      body: SafeArea(
+        child: body,
       ),
     );
   }

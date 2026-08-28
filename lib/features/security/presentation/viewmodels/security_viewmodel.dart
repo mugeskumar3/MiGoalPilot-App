@@ -2,7 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:migoalpilot/core/services/services.dart';
 import 'package:migoalpilot/features/security/domain/services/security_service.dart';
 import 'package:migoalpilot/features/security/domain/services/biometric_service.dart';
-import 'package:migoalpilot/core/repositories/session_repository.dart';
+import 'package:migoalpilot/features/security/domain/models/user_session.dart';
+import 'package:migoalpilot/features/security/data/repositories/session_repository.dart';
 import 'package:migoalpilot/features/security/presentation/viewmodels/security_state.dart';
 import 'package:migoalpilot/features/auth/presentation/viewmodels/auth_viewmodel.dart';
 
