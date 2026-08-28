@@ -256,7 +256,7 @@ class GoalDetailViewModel extends StateNotifier<GoalDetailState> {
             message:
                 '🎉 You\'ve reached ${m.percentage}% of your ${g.name}! ${g.type == GoalType.gold ? "${m.targetAmount.toStringAsFixed(2)}g" : "₹${m.targetAmount.toStringAsFixed(0)}"} saved.',
             timestamp: DateTime.now(),
-            deepLink: '/goals/${g.id}',
+            deepLink: g.type == GoalType.gold ? '/gold-goals/${g.id}' : '/goals/${g.id}',
           );
           await _notifRepo.addNotification(notif);
         }

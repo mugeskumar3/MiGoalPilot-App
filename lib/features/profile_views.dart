@@ -601,6 +601,8 @@ class ProfileScreen extends ConsumerWidget {
                 _profileGroup(context, 'Goals & AI', [
                   _profileTile(context, Icons.compass_calibration_outlined, 'Goal Insights', 'Progress analytics & projections', '/goals'),
                   _tileDivider(isLight),
+                  _profileTile(context, Icons.bar_chart_rounded, 'Savings Analytics', 'Visualize saving patterns and gold trends', '/goal-analytics'),
+                  _tileDivider(isLight),
                   _profileTile(context, Icons.assistant_outlined, 'GoalPilot AI Assistant', 'AI savings companion settings', '/ai'),
                 ]),
                 const SizedBox(height: 18),

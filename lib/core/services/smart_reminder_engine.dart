@@ -131,7 +131,7 @@ class SmartReminderEngine {
                 message: msg,
                 goalId: g.id,
                 actionLabel: 'Review Goal',
-                actionRoute: '/goals/${g.id}',
+                actionRoute: g.type == GoalType.gold ? '/gold-goals/${g.id}' : '/goals/${g.id}',
                 createdAt: now,
               ),
             );
@@ -209,7 +209,7 @@ class SmartReminderEngine {
                       'You are only $formattedDiff away from unlocking the ${nextUpcoming.percentage}% milestone for ${g.name}.',
                   goalId: g.id,
                   actionLabel: 'Milestone Details',
-                  actionRoute: '/goals/${g.id}',
+                  actionRoute: g.type == GoalType.gold ? '/gold-goals/${g.id}' : '/goals/${g.id}',
                   createdAt: now,
                 ),
               );

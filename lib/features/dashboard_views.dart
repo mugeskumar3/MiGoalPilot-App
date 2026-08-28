@@ -488,7 +488,7 @@ class HomeDashboardScreen extends ConsumerWidget {
                         itemBuilder: (context, index) {
                           final g = goalsState.goals[index];
                           return InkWell(
-                            onTap: () => context.push('/goals/${g.id}'),
+                            onTap: () => context.push(g.type == GoalType.gold ? '/gold-goals/${g.id}' : '/goals/${g.id}'),
                             borderRadius: BorderRadius.circular(20),
                             child: Container(
                               padding: const EdgeInsets.all(20),
@@ -770,7 +770,7 @@ class GoalsScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final g = state.goals[index];
                 return InkWell(
-                  onTap: () => context.push('/goals/${g.id}'),
+                  onTap: () => context.push(g.type == GoalType.gold ? '/gold-goals/${g.id}' : '/goals/${g.id}'),
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
                     padding: const EdgeInsets.all(20),

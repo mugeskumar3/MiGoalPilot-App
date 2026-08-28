@@ -232,7 +232,7 @@ class MonthlySnapshotCalculator {
     if (behindGoals.isNotEmpty) {
       final weakest = behindGoals.first;
       recommendation = 'Your ${weakest.goalName} needs attention. Consider adding extra savings next month.';
-      recommendationRoute = '/goals/${weakest.goalId}';
+      recommendationRoute = weakest.goalType == GoalType.gold ? '/gold-goals/${weakest.goalId}' : '/goals/${weakest.goalId}';
       recommendationLabel = 'View Goal';
     } else if (percentChange > 10) {
       recommendation = 'Great month — keep your current saving pace!';
