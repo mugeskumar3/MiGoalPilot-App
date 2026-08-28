@@ -18,6 +18,7 @@ class _AppLockWrapperState extends ConsumerState<AppLockWrapper> with WidgetsBin
   DateTime _lastInteractionTime = DateTime.now();
   Timer? _inactivityTimer;
   AppLifecycleState _lifecycleState = AppLifecycleState.resumed;
+  bool _wasLockedWhenPaused = false;
   static const _channel = MethodChannel('com.migoalpilot.app/security');
 
   @override
@@ -60,6 +61,7 @@ class _AppLockWrapperState extends ConsumerState<AppLockWrapper> with WidgetsBin
     final secState = ref.read(securityViewModelProvider);
 
     if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      _wasLockedWhenPaused = secState.isLocked;
       _lastActiveTime = DateTime.now();
       // Enable screen protection (hides content from app switcher)
       _setScreenProtection(true);
@@ -68,12 +70,17 @@ class _AppLockWrapperState extends ConsumerState<AppLockWrapper> with WidgetsBin
       _setScreenProtection(false);
       _lastInteractionTime = DateTime.now();
 
-      if (secState.appLockEnabled && !secState.isLocked) {
-        final inactivityLimit = secState.inactivityDuration;
-        final elapsed = DateTime.now().difference(_lastActiveTime).inSeconds;
+      if (_wasLockedWhenPaused) {
+        _wasLockedWhenPaused = false;
+        _lastActiveTime = DateTime.now();
+      } else {
+        if (secState.appLockEnabled && !secState.isLocked) {
+          final inactivityLimit = secState.inactivityDuration;
+          final elapsed = DateTime.now().difference(_lastActiveTime).inSeconds;
 
-        if (inactivityLimit == 0 || elapsed >= inactivityLimit) {
-          secNotifier.setLockedState(true);
+          if (inactivityLimit == 0 || elapsed >= inactivityLimit) {
+            secNotifier.setLockedState(true);
+          }
         }
       }
     }
