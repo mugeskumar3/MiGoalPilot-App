@@ -15,6 +15,7 @@ import 'package:migoalpilot/features/legal_views.dart';
 import 'package:migoalpilot/features/monthly_snapshot_views.dart';
 import 'package:migoalpilot/features/goal_analytics_views.dart';
 import 'package:migoalpilot/features/security_views.dart';
+import 'package:migoalpilot/features/goal_template_setup_views.dart';
 import 'package:migoalpilot/app/constants/app_constants.dart';
 
 final GoRouter appRouter = GoRouter(
@@ -85,6 +86,14 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/goal-selection',
       builder: (context, state) => const GoalSelectionScreen(),
+    ),
+
+    GoRoute(
+      path: '/setup-goal/:templateId',
+      builder: (context, state) {
+        final templateId = state.pathParameters['templateId'] ?? '';
+        return GoalTemplateSetupScreen(templateId: templateId);
+      },
     ),
 
     GoRoute(

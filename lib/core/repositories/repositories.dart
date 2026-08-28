@@ -9,7 +9,12 @@ abstract class AuthRepository {
   Future<User> register(String name, String email, String password);
   Future<void> logout();
   Future<void> forgotPassword(String email);
-  Future<User> updateProfile({required String name, required String email, String? phone, String? country});
+  Future<User> updateProfile({
+    required String name,
+    required String email,
+    String? phone,
+    String? country,
+  });
 }
 
 class MockAuthRepository implements AuthRepository {
@@ -68,7 +73,12 @@ class MockAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<User> updateProfile({required String name, required String email, String? phone, String? country}) async {
+  Future<User> updateProfile({
+    required String name,
+    required String email,
+    String? phone,
+    String? country,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 800));
     if (_currentUser == null) {
       throw Exception('Not authenticated');
@@ -90,7 +100,12 @@ abstract class GoalRepository {
   Future<Goal> updateGoal(Goal goal);
   Future<void> deleteGoal(String id);
   Future<List<SavingsTransaction>> getTransactions(String goalId);
-  Future<SavingsTransaction> addSaving(String goalId, double amount, {String? note, double? grams});
+  Future<SavingsTransaction> addSaving(
+    String goalId,
+    double amount, {
+    String? note,
+    double? grams,
+  });
 }
 
 class MockGoalRepository implements GoalRepository {
@@ -202,7 +217,12 @@ class MockGoalRepository implements GoalRepository {
   }
 
   @override
-  Future<SavingsTransaction> addSaving(String goalId, double amount, {String? note, double? grams}) async {
+  Future<SavingsTransaction> addSaving(
+    String goalId,
+    double amount, {
+    String? note,
+    double? grams,
+  }) async {
     final tx = SavingsTransaction(
       id: 't_${Random().nextInt(10000)}',
       goalId: goalId,
@@ -218,7 +238,9 @@ class MockGoalRepository implements GoalRepository {
       final old = _goals[idx];
       _goals[idx] = old.copyWith(
         currentSavings: old.currentSavings + amount,
-        purchasedGrams: grams != null ? old.purchasedGrams + grams : old.purchasedGrams,
+        purchasedGrams: grams != null
+            ? old.purchasedGrams + grams
+            : old.purchasedGrams,
       );
     }
     return tx;
@@ -239,22 +261,94 @@ class MockMarriageRepository implements MarriageRepository {
     _plan ??= MarriagePlan(
       totalBudget: 1050000,
       budgetItems: [
-        BudgetItem(id: 'b1', category: 'Venue', estimatedCost: 300000, actualSpent: 50000),
-        BudgetItem(id: 'b2', category: 'Food & Catering', estimatedCost: 250000, actualSpent: 0),
-        BudgetItem(id: 'b3', category: 'Jewellery', estimatedCost: 200000, actualSpent: 75000),
-        BudgetItem(id: 'b4', category: 'Photography', estimatedCost: 80000, actualSpent: 10000),
-        BudgetItem(id: 'b5', category: 'Clothing & Attire', estimatedCost: 70000, actualSpent: 15000),
-        BudgetItem(id: 'b6', category: 'Decoration & Stage', estimatedCost: 60000, actualSpent: 0),
-        BudgetItem(id: 'b7', category: 'Travel & Honeymoon', estimatedCost: 50000, actualSpent: 0),
-        BudgetItem(id: 'b8', category: 'Accommodation', estimatedCost: 20000, actualSpent: 0),
-        BudgetItem(id: 'b9', category: 'Invitations & Gift Cards', estimatedCost: 10000, actualSpent: 2000),
-        BudgetItem(id: 'b10', category: 'Emergency Buffer', estimatedCost: 10000, actualSpent: 0),
+        BudgetItem(
+          id: 'b1',
+          category: 'Venue',
+          estimatedCost: 300000,
+          actualSpent: 50000,
+        ),
+        BudgetItem(
+          id: 'b2',
+          category: 'Food & Catering',
+          estimatedCost: 250000,
+          actualSpent: 0,
+        ),
+        BudgetItem(
+          id: 'b3',
+          category: 'Jewellery',
+          estimatedCost: 200000,
+          actualSpent: 75000,
+        ),
+        BudgetItem(
+          id: 'b4',
+          category: 'Photography',
+          estimatedCost: 80000,
+          actualSpent: 10000,
+        ),
+        BudgetItem(
+          id: 'b5',
+          category: 'Clothing & Attire',
+          estimatedCost: 70000,
+          actualSpent: 15000,
+        ),
+        BudgetItem(
+          id: 'b6',
+          category: 'Decoration & Stage',
+          estimatedCost: 60000,
+          actualSpent: 0,
+        ),
+        BudgetItem(
+          id: 'b7',
+          category: 'Travel & Honeymoon',
+          estimatedCost: 50000,
+          actualSpent: 0,
+        ),
+        BudgetItem(
+          id: 'b8',
+          category: 'Accommodation',
+          estimatedCost: 20000,
+          actualSpent: 0,
+        ),
+        BudgetItem(
+          id: 'b9',
+          category: 'Invitations & Gift Cards',
+          estimatedCost: 10000,
+          actualSpent: 2000,
+        ),
+        BudgetItem(
+          id: 'b10',
+          category: 'Emergency Buffer',
+          estimatedCost: 10000,
+          actualSpent: 0,
+        ),
       ],
       timelineTasks: [
-        TimelineTask(id: 'task1', title: 'Book Venue', deadline: DateTime.now().add(const Duration(days: 30)), isCompleted: true, category: 'Venue'),
-        TimelineTask(id: 'task2', title: 'Confirm Catering Menu', deadline: DateTime.now().add(const Duration(days: 60)), category: 'Food & Catering'),
-        TimelineTask(id: 'task3', title: 'Finalize Jewellery Purchases', deadline: DateTime.now().add(const Duration(days: 90)), isCompleted: false, category: 'Jewellery'),
-        TimelineTask(id: 'task4', title: 'Hire Photographer/Videographer', deadline: DateTime.now().add(const Duration(days: 120)), category: 'Photography'),
+        TimelineTask(
+          id: 'task1',
+          title: 'Book Venue',
+          deadline: DateTime.now().add(const Duration(days: 30)),
+          isCompleted: true,
+          category: 'Venue',
+        ),
+        TimelineTask(
+          id: 'task2',
+          title: 'Confirm Catering Menu',
+          deadline: DateTime.now().add(const Duration(days: 60)),
+          category: 'Food & Catering',
+        ),
+        TimelineTask(
+          id: 'task3',
+          title: 'Finalize Jewellery Purchases',
+          deadline: DateTime.now().add(const Duration(days: 90)),
+          isCompleted: false,
+          category: 'Jewellery',
+        ),
+        TimelineTask(
+          id: 'task4',
+          title: 'Hire Photographer/Videographer',
+          deadline: DateTime.now().add(const Duration(days: 120)),
+          category: 'Photography',
+        ),
       ],
     );
     return _plan!;
@@ -285,7 +379,10 @@ class MockMarriageRepository implements MarriageRepository {
   }
 
   @override
-  Future<MarriagePlan> toggleTimelineTask(String taskId, bool isCompleted) async {
+  Future<MarriagePlan> toggleTimelineTask(
+    String taskId,
+    bool isCompleted,
+  ) async {
     final p = _initPlan();
     final tasks = List<TimelineTask>.from(p.timelineTasks);
     final idx = tasks.indexWhere((t) => t.id == taskId);
@@ -316,7 +413,11 @@ class MockGoldRepository implements GoldRepository {
   @override
   Future<List<double>> getPriceHistory(String range) async {
     const basePrice = 12500.0;
-    final points = range == '7D' ? 7 : range == '30D' ? 30 : 60;
+    final points = range == '7D'
+        ? 7
+        : range == '30D'
+        ? 30
+        : 60;
     final rand = Random();
     return List.generate(points, (idx) {
       final change = (rand.nextDouble() - 0.52) * 300;
@@ -338,7 +439,8 @@ class MockAiRepository implements AiRepository {
     return AiInsight(
       id: 'insight_1',
       title: 'Savings Pace Alert',
-      description: 'You\'re ₹2,500 ahead of your monthly savings target. Keep your current pace and you may reach your goal earlier.',
+      description:
+          'You\'re ₹2,500 ahead of your monthly savings target. Keep your current pace and you may reach your goal earlier.',
       timestamp: DateTime.now(),
     );
   }
@@ -375,7 +477,10 @@ class MockAiRepository implements AiRepository {
   }
 
   @override
-  Future<String> simulateWhatIf(int newGuestCount, double previousBudget) async {
+  Future<String> simulateWhatIf(
+    int newGuestCount,
+    double previousBudget,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 500));
     const costPerGuest = 600.0;
     final difference = (newGuestCount - 300) * costPerGuest;
@@ -422,14 +527,16 @@ class MockNotificationRepository implements NotificationRepository {
     NotificationItem(
       id: 'n3',
       title: 'AI Insight',
-      message: 'Your House Downpayment goal needs attention. Savings are behind schedule.',
+      message:
+          'Your House Downpayment goal needs attention. Savings are behind schedule.',
       timestamp: DateTime.now().subtract(const Duration(hours: 6)),
       deepLink: '/goals/g_house',
     ),
     NotificationItem(
       id: 'n4',
       title: 'Milestone Reached!',
-      message: 'Wedding Ceremony reached 40% of its target. Keep flying high! ✈️',
+      message:
+          'Wedding Ceremony reached 40% of its target. Keep flying high! ✈️',
       timestamp: DateTime.now().subtract(const Duration(days: 1)),
       isRead: true,
       deepLink: '/goals/g_marriage',
