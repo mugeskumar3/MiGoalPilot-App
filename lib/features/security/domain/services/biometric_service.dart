@@ -29,6 +29,7 @@ class BiometricService {
           useErrorDialogs: true,
           stickyAuth: true,
           biometricOnly: true,
+          sensitiveTransaction: false,
         ),
       );
     } on PlatformException catch (_) {

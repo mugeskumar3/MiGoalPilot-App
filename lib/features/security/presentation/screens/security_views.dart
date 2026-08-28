@@ -212,21 +212,30 @@ class _LockScreenOverlayState extends ConsumerState<LockScreenOverlay> {
   String _pin = '';
   String? _error;
 
+  bool _isBiometricAvailable = false;
+
   @override
   void initState() {
     super.initState();
+    _checkBiometricAvailability();
     // Auto trigger biometric scan on overlay mount if enabled
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _triggerBiometric();
     });
   }
 
-  Future<void> _triggerBiometric() async {
-    final notifier = ref.read(securityViewModelProvider.notifier);
-    final state = ref.read(securityViewModelProvider);
-    if (state.biometricEnabled) {
-      await notifier.authenticateWithBiometric();
+  Future<void> _checkBiometricAvailability() async {
+    final available = await ref.read(biometricServiceProvider).isBiometricAvailable();
+    if (mounted) {
+      setState(() {
+        _isBiometricAvailable = available;
+      });
     }
+  }
+
+  Future<void> _triggerBiometric({bool force = false}) async {
+    final notifier = ref.read(securityViewModelProvider.notifier);
+    await notifier.authenticateWithBiometric(force: force);
   }
 
   void _handleNumber(int val) async {
@@ -288,7 +297,6 @@ class _LockScreenOverlayState extends ConsumerState<LockScreenOverlay> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-    final state = ref.watch(securityViewModelProvider);
 
     return Scaffold(
       backgroundColor: isLight ? AppColors.background : AppColors.backgroundDark,
@@ -338,7 +346,7 @@ class _LockScreenOverlayState extends ConsumerState<LockScreenOverlay> {
             const Spacer(flex: 2),
 
             // Numeric Keyboard
-            _buildKeyboard(isLight, state.biometricEnabled),
+            _buildKeyboard(isLight),
             const SizedBox(height: 16),
 
             // Forgot PIN
@@ -359,7 +367,7 @@ class _LockScreenOverlayState extends ConsumerState<LockScreenOverlay> {
     );
   }
 
-  Widget _buildKeyboard(bool isLight, bool biometricEnabled) {
+  Widget _buildKeyboard(bool isLight) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
@@ -382,8 +390,12 @@ class _LockScreenOverlayState extends ConsumerState<LockScreenOverlay> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              biometricEnabled
-                  ? _keyboardIconButton(Icons.fingerprint_rounded, _triggerBiometric, isLight)
+              _isBiometricAvailable
+                  ? _keyboardIconButton(
+                      Icons.fingerprint_rounded,
+                      () => _triggerBiometric(force: true),
+                      isLight,
+                    )
                   : const SizedBox(width: 64, height: 64),
               _keyboardButton(0, isLight),
               _keyboardIconButton(Icons.backspace_outlined, _handleDelete, isLight),

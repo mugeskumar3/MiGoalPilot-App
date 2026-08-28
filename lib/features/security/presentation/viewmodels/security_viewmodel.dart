@@ -119,8 +119,8 @@ class SecurityViewModel extends StateNotifier<SecurityState> {
     return success;
   }
 
-  Future<bool> authenticateWithBiometric() async {
-    if (!state.biometricEnabled) return false;
+  Future<bool> authenticateWithBiometric({bool force = false}) async {
+    if (!force && !state.biometricEnabled) return false;
     final success = await _biometricService.authenticate('Unlock MiGoalPilot');
     if (success) {
       state = state.copyWith(isLocked: false);
